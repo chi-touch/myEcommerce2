@@ -11,12 +11,16 @@ import java.util.List;
 @Entity
 public class Product {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String productName;
     private ProductType productType;
     private BigDecimal price;
     private String description;
-    @ManyToMany(mappedBy = "productList")
-    private List<Order> orders = new ArrayList<>();
+
+//    @ManyToMany(mappedBy = "productList")
+//    private List<Order> orders = new ArrayList<>();
+
+
 
 }

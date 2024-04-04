@@ -17,12 +17,16 @@ public class User {
     private String lastName;
     private String email;
     private String password;
-    @ManyToMany
-    private List<Product> productList = new ArrayList<>();
+//    @ManyToMany
+//    private List<Product> productList = new ArrayList<>();
     private Role role;
     private String username;
     private boolean isLocked;
+    private String dateCreated;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Address address;
+
+
+
 }

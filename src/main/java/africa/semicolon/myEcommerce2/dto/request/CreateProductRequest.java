@@ -10,7 +10,7 @@ import java.math.BigDecimal;
 @Getter
 public class CreateProductRequest {
     private String productName;
-    private String productType;
+    private ProductType productType;
     private BigDecimal price;
     private String description;
 

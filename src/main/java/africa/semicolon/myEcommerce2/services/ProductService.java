@@ -9,10 +9,12 @@ public interface ProductService {
     Product create(CreateProductRequest createProduct);
     List<Product> findProductByName(String productName);
     Product findById(Long id);
-    void delete(String productName);
+    void delete(Product productName);
 
     List<Product>getAllProduct();
 
 
     Long getNumberOfProduct();
+
+    Long count();
 }
