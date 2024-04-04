@@ -70,7 +70,7 @@ public class UserServiceImplTest {
         loginRequest.setUsername("ami");
         loginRequest.setPassword("1234");
         userService.login(loginRequest);
-        User user = userService.getByUsername("ami");
+        User user = userService.findByUsername("ami");
         assertFalse(user.isLocked());
     }
 

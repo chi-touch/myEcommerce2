@@ -12,7 +12,7 @@ public interface UserService {
     long count();
     LoginResponse login(LoginRequest loginRequest);
 
-    User getByUsername(String username);
+    User findByUsername(String username);
 
     void deleteAll();
 }
