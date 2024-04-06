@@ -1,7 +1,4 @@
 package africa.semicolon.myEcommerce2.services;
-
-import africa.semicolon.myEcommerce2.data.model.Role;
-import africa.semicolon.myEcommerce2.data.model.user.Address;
 import africa.semicolon.myEcommerce2.data.repositories.UserRepository;
 import africa.semicolon.myEcommerce2.data.model.User;
 import africa.semicolon.myEcommerce2.dto.request.RegisterRequest;
@@ -21,6 +18,7 @@ import static africa.semicolon.myEcommerce2.data.model.Role.CUSTOMER;
 @Service
 
 public class UserServiceImpl implements UserService{
+
    @Autowired
     private UserRepository userRepository;
     @Override

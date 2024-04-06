@@ -8,10 +8,20 @@ import lombok.Setter;
 import java.math.BigDecimal;
 @Setter
 @Getter
+
 public class CreateProductRequest {
     private String productName;
     private ProductType productType;
     private BigDecimal price;
     private String description;
 
+    @Override
+    public String toString() {
+        return "CreateProductRequest{" +
+                "productName='" + productName + '\'' +
+                ", productType=" + productType +
+                ", price=" + price +
+                ", description='" + description + '\'' +
+                '}';
+    }
 }

@@ -1,31 +1,39 @@
 package africa.semicolon.myEcommerce2.data.model;
 
-import africa.semicolon.myEcommerce2.data.model.user.Address;
-import jakarta.persistence.*;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
 @Data
-@Entity
+@Document
 public class Order {
 
     @Id
-    private Long id;
-//    @ManyToMany
-//    @Convert(converter = Product.class)
-//    private List<Product> productList = new ArrayList<>();
-    private BigDecimal price;
+    private String id;
+
+    private List<Product> productList = new ArrayList<>();
+    private BigDecimal amount;
     private String productStatus;
     private String deliveryDate = String.valueOf(LocalDate.now());
-    @OneToOne(cascade = CascadeType.ALL,fetch =FetchType.EAGER)
+    private OrderStatus orderStatus;
     private Address address;
+
+    private String createTime = createdAt();
+
+    private String createdAt(){
+        LocalDateTime date = LocalDateTime.now();
+
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yy HH:mm:ss");
+        return date.format(dateTimeFormatter);
+    }
 
 
 }

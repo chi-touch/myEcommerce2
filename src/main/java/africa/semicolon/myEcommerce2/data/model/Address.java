@@ -1,14 +1,14 @@
 package africa.semicolon.myEcommerce2.data.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+
+
 import lombok.Data;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 @Data
-@Entity(name = "UserAddress")
+@Document
 public class Address {
-    @Id
-    private Long id;
+
     private String state;
     private String country;
     private String street;

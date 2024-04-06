@@ -1,8 +1,8 @@
 package africa.semicolon.myEcommerce2.utils;
 
+import africa.semicolon.myEcommerce2.data.model.Address;
 import africa.semicolon.myEcommerce2.data.model.Product;
 import africa.semicolon.myEcommerce2.data.model.User;
-import africa.semicolon.myEcommerce2.data.model.user.Address;
 import africa.semicolon.myEcommerce2.dto.request.CreateProductRequest;
 import africa.semicolon.myEcommerce2.dto.request.RegisterRequest;
 import africa.semicolon.myEcommerce2.dto.response.LoginRequest;

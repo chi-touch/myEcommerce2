@@ -1,31 +1,41 @@
 package africa.semicolon.myEcommerce2.data.model;
 
-import africa.semicolon.myEcommerce2.data.model.user.Address;
-import jakarta.persistence.*;
-import lombok.Data;
 
+
+import lombok.Data;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
 @Data
-@Entity
+@Document
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String id;
     private String firstName;
     private String lastName;
     private String email;
     private String password;
-//    @ManyToMany
-//    private List<Product> productList = new ArrayList<>();
+    private List<Product> productList = new ArrayList<>();
     private Role role;
     private String username;
     private boolean isLocked;
     private String dateCreated;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Address address;
+
+    private String createTime = createdAt();
+
+    private String createdAt(){
+        LocalDateTime date = LocalDateTime.now();
+
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yy HH:mm:ss");
+        return date.format(dateTimeFormatter);
+    }
 
 
 

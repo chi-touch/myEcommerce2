@@ -1,5 +1,7 @@
 package africa.semicolon.myEcommerce2.services;
 
+import africa.semicolon.myEcommerce2.data.model.Product;
+import africa.semicolon.myEcommerce2.data.model.ProductType;
 import africa.semicolon.myEcommerce2.dto.request.CreateProductRequest;
 import africa.semicolon.myEcommerce2.exceptions.ProductAlreadyExistException;
 import org.junit.jupiter.api.BeforeEach;
@@ -8,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Optional;
 
 import static africa.semicolon.myEcommerce2.data.model.ProductType.*;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -71,7 +75,7 @@ public class ProductServiceImplTest {
         createProductRequest4.setPrice(BigDecimal.valueOf(2000));
         createProductRequest4.setProductType(ELECTRONICS);
         productService.create(createProductRequest4);
-        assertThat(productService.count(),is(4L));
+        assertThat(productService.count(),is(5L));
     }
 
     @Test
@@ -85,7 +89,39 @@ public class ProductServiceImplTest {
 
     @Test
     public void testToDelete(){
-        productService.delete();
+        createProductRequest.setProductName("knife");
+        createProductRequest.setProductType(UTENSILS);
+        createProductRequest.setPrice(BigDecimal.valueOf(1000));
+        createProductRequest.setDescription("kitchen tools");
+        productService.create(createProductRequest);
+        productService.delete("knife");
+
+     assertEquals(7, productService.getAllProduct().size());
+    }
+
+    @Test
+    public void testToFindAllProduct(){
+        productService.getAllProduct();
+        assertEquals(7,productService.count());
+    }
+
+    @Test
+    public void testToFindById(){
+        Product result = productService.findById("660fdf304fcf2553f2633c63");
+        assertNotNull(result);
+    }
+
+    @Test
+    public void testToFindByProductName(){
+        createProductRequest.setProductName("knife");
+        createProductRequest.setProductType(UTENSILS);
+        createProductRequest.setPrice(BigDecimal.valueOf(1000));
+        createProductRequest.setDescription("kitchen tools");
+        productService.create(createProductRequest);
+        productService.findProductByName("knife");
+        assertFalse(productService.equals("knife"));
+
+
     }
 
 

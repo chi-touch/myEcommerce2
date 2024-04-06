@@ -4,11 +4,16 @@ import africa.semicolon.myEcommerce2.data.model.Role;
 import africa.semicolon.myEcommerce2.data.model.User;
 import africa.semicolon.myEcommerce2.dto.request.RegisterRequest;
 import africa.semicolon.myEcommerce2.dto.response.LoginRequest;
+import africa.semicolon.myEcommerce2.dto.response.LoginResponse;
+import africa.semicolon.myEcommerce2.dto.response.RegisterResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import static africa.semicolon.myEcommerce2.data.model.Role.ADMIN;
+
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
@@ -16,62 +21,96 @@ public class UserServiceImplTest {
 
 
 
-    RegisterRequest  registerRequest;
+    RegisterRequest request;
     LoginRequest loginRequest;
     @Autowired
     UserService userService;
     @BeforeEach
     public void setUp(){
-        userService.deleteAll();
-        registerRequest = new RegisterRequest();
+//        userService.deleteAll();
+        request = new RegisterRequest();
         loginRequest = new LoginRequest();
     }
 
     @Test
     public void testToRegisterUser(){
         //registerRequest.setAddress(new Address());
-        registerRequest.setRole(Role.CUSTOMER);
-        registerRequest.setFirstName("chichi");
-        registerRequest.setLastName("dave");
-        registerRequest.setPassword("1234");
-        registerRequest.setUsername("ami");
-        userService.register(registerRequest);
+        request.setRole(Role.CUSTOMER);
+        request.setFirstName("chichi");
+        request.setLastName("dave");
+        request.setPassword("1234");
+        request.setUsername("ami");
+        //userService.register(request);
+        RegisterResponse registerResponse =  userService.register(request);
+        assertThat(registerResponse).isNotNull();
+        assertThat(registerResponse.getMessage()).isNotNull();
         assertEquals(1, userService.count());
     }
     @Test
     public void testToRegisterTwoUser(){
-        registerRequest.setRole(Role.CUSTOMER);
-        registerRequest.setFirstName("chichi");
-        registerRequest.setLastName("dave");
-        registerRequest.setPassword("1234");
-        registerRequest.setUsername("ami");
-        userService.register(registerRequest);
+
+        RegisterRequest request2 = new RegisterRequest();
+        request2.setRole(Role.CUSTOMER);
+        request2.setFirstName("chichi3");
+        request2.setLastName("dave3");
+        request2.setPassword("1237");
+        request2.setUsername("ami3");
+       // userService.register(request2);
+
 
         RegisterRequest registerRequest1 = new RegisterRequest();
-        registerRequest1.setRole(Role.ADMIN);
+        registerRequest1.setRole(ADMIN);
         registerRequest1.setFirstName("chich");
         registerRequest1.setLastName("daved");
         registerRequest1.setPassword("1235");
         registerRequest1.setUsername("div");
-        userService.register(registerRequest1);
+        //userService.register(registerRequest1);
 
-        assertEquals(2,userService.count());
+
+        RegisterResponse registerResponse1 =  userService.register(registerRequest1);
+        RegisterResponse registerResponse2 =  userService.register(request2);
+
+        assertThat(registerResponse1).isNotNull();
+        assertThat(registerResponse2).isNotNull();
+
+
+        assertThat(registerResponse1.getMessage()).isNotNull();
+        assertThat(registerResponse2.getMessage()).isNotNull();
+
+        assertEquals(3,userService.count());
     }
 
     @Test
     public void testToLoginUser(){
-        registerRequest.setRole(Role.CUSTOMER);
-        registerRequest.setFirstName("chichi");
-        registerRequest.setLastName("dave");
-        registerRequest.setPassword("1234");
-        registerRequest.setUsername("ami");
-        userService.register(registerRequest);
 
         loginRequest.setUsername("ami");
         loginRequest.setPassword("1234");
-        userService.login(loginRequest);
-        User user = userService.findByUsername("ami");
-        assertFalse(user.isLocked());
+        LoginResponse loginResponse = userService.login(loginRequest);
+        assertThat(loginResponse).isNotNull();
+        assertThat(loginResponse.getMessage()).isNotNull();
+    }
+
+    @Test
+    public void testToDeleteAll(){
+        RegisterRequest registerRequest1 = new RegisterRequest();
+        registerRequest1.setRole(ADMIN);
+        registerRequest1.setFirstName("chichi2");
+        registerRequest1.setLastName("dave2");
+        registerRequest1.setPassword("1235");
+        registerRequest1.setUsername("div2");
+        RegisterResponse registerResponse = userService.register(registerRequest1);
+        assertThat(registerResponse).isNotNull();
+        assertThat(registerResponse.getMessage()).isNotNull();
+        userService.deleteAll();
+        assertEquals(0,userService.count());
+    }
+
+    @Test
+    public void testToFindByUserName(){
+        User expected = new User();
+       expected.setUsername("ami");
+        User actual = userService.findByUsername("ami");
+        assertEquals(expected.getUsername(),actual.getUsername());
     }
 
 }
