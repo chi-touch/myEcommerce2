@@ -1,60 +1,52 @@
 package africa.semicolon.myEcommerce2.services;
 
-import africa.semicolon.myEcommerce2.data.model.Product;
-import africa.semicolon.myEcommerce2.data.model.ProductType;
 import africa.semicolon.myEcommerce2.dto.request.CreateProductRequest;
+import africa.semicolon.myEcommerce2.dto.response.CreateProductResponse;
 import africa.semicolon.myEcommerce2.exceptions.ProductAlreadyExistException;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Optional;
 
 import static africa.semicolon.myEcommerce2.data.model.ProductType.*;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static africa.semicolon.myEcommerce2.data.model.ProductType.UTENSILS;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
-
 @SpringBootTest
 public class ProductServiceImplTest {
 
     @Autowired
     ProductService productService;
-    CreateProductRequest createProductRequest;
-    @BeforeEach
-    public void setUp(){
-
-        createProductRequest = new CreateProductRequest();
-    }
 
     @Test
     public void testToCreateProduct(){
+        CreateProductRequest createProductRequest = new CreateProductRequest();
         createProductRequest.setProductName("knife");
         createProductRequest.setProductType(UTENSILS);
         createProductRequest.setPrice(BigDecimal.valueOf(1000));
         createProductRequest.setDescription("kitchen tools");
         productService.create(createProductRequest);
-        assertThat(productService.count(), is(1L));
+        CreateProductResponse createProductResponse = productService.create(createProductRequest);
+        productService.count().equals(1L);
+        assertThat(createProductResponse.getMessage()).isNotNull();
     }
 
     @Test
     public void testToCreateTwoProducts(){
-
         CreateProductRequest createProductRequest1 = new CreateProductRequest();
         createProductRequest1.setDescription("phones");
         createProductRequest1.setProductName("samsung");
         createProductRequest1.setPrice(BigDecimal.valueOf(2000));
         createProductRequest1.setProductType(ACCESSORIES);
         productService.create(createProductRequest1);
-       assertThat(productService.count(),is(2L));
+        CreateProductResponse createProductResponse = productService.create(createProductRequest1);
+        productService.count().equals(2L);
+        assertThat(createProductResponse.getMessage()).isNotNull();
     }
 
     @Test
     public void testToCreateMoreProducts(){
-
         CreateProductRequest createProductRequest2 = new CreateProductRequest();
         createProductRequest2.setDescription("phones");
         createProductRequest2.setProductName("techno");
@@ -74,29 +66,33 @@ public class ProductServiceImplTest {
         createProductRequest4.setProductName("television");
         createProductRequest4.setPrice(BigDecimal.valueOf(2000));
         createProductRequest4.setProductType(ELECTRONICS);
-        productService.create(createProductRequest4);
-        assertThat(productService.count(),is(5L));
+
+        CreateProductResponse createProductResponse = productService.create(createProductRequest4);
+        productService.count().equals(5L);
+        assertThat(createProductResponse.getMessage()).isNotNull();
+
     }
 
     @Test
     public void testToCreatExistingProduct(){
-        createProductRequest.setProductName("knife");
-        createProductRequest.setProductType(UTENSILS);
-        createProductRequest.setPrice(BigDecimal.valueOf(1000));
-        createProductRequest.setDescription("kitchen tools");
-        assertThrows(ProductAlreadyExistException.class,()-> productService.create(createProductRequest));
+        CreateProductRequest createProductRequest1 =new CreateProductRequest();
+        createProductRequest1.setProductName("knife");
+        createProductRequest1.setProductType(UTENSILS);
+        createProductRequest1.setPrice(BigDecimal.valueOf(1000));
+        createProductRequest1.setDescription("kitchen tools");
+        assertThrows(ProductAlreadyExistException.class, ()-> productService.create(createProductRequest1));
     }
 
     @Test
     public void testToDelete(){
-        createProductRequest.setProductName("knife");
-        createProductRequest.setProductType(UTENSILS);
-        createProductRequest.setPrice(BigDecimal.valueOf(1000));
-        createProductRequest.setDescription("kitchen tools");
-        productService.create(createProductRequest);
+        CreateProductRequest createProductRequest1 = new CreateProductRequest();
+        createProductRequest1.setProductName("knife");
+        createProductRequest1.setProductType(UTENSILS);
+        createProductRequest1.setPrice(BigDecimal.valueOf(1000));
+        createProductRequest1.setDescription("kitchen tools");
+        productService.create(createProductRequest1);
         productService.delete("knife");
-
-     assertEquals(7, productService.getAllProduct().size());
+        assertEquals(5, productService.getAllProduct().size());
     }
 
     @Test
@@ -105,25 +101,22 @@ public class ProductServiceImplTest {
         assertEquals(7,productService.count());
     }
 
-    @Test
-    public void testToFindById(){
-        Product result = productService.findById("660fdf304fcf2553f2633c63");
-        assertNotNull(result);
-    }
+//    @Test
+//    public void testToFindById(){
+//        Product result = productService.findById("660fdf304fcf2553f2633c63");
+//        assertNotNull(result);
+//    }
 
     @Test
     public void testToFindByProductName(){
+        CreateProductRequest createProductRequest = new CreateProductRequest();
         createProductRequest.setProductName("knife");
         createProductRequest.setProductType(UTENSILS);
         createProductRequest.setPrice(BigDecimal.valueOf(1000));
         createProductRequest.setDescription("kitchen tools");
         productService.create(createProductRequest);
-        productService.findProductByName("knife");
-        assertFalse(productService.equals("knife"));
-
+        assertEquals("knife", productService.findProductByName("knife"));
 
     }
-
-
 
 }

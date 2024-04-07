@@ -13,7 +13,10 @@ public class RegisterRequest {
     private String password;
     private Role role;
 
-    private Address address;
+    private String state;
+    private String country;
+    private String street;
+    private String houseNumber;
     private String username;
     private boolean isLocked;
 }

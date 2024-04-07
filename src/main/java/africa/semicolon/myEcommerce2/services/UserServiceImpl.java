@@ -1,26 +1,35 @@
 package africa.semicolon.myEcommerce2.services;
+import africa.semicolon.myEcommerce2.data.model.Product;
 import africa.semicolon.myEcommerce2.data.repositories.UserRepository;
 import africa.semicolon.myEcommerce2.data.model.User;
+import africa.semicolon.myEcommerce2.dto.request.OrderRequest;
 import africa.semicolon.myEcommerce2.dto.request.RegisterRequest;
 import africa.semicolon.myEcommerce2.dto.response.LoginRequest;
 import africa.semicolon.myEcommerce2.dto.response.LoginResponse;
+import africa.semicolon.myEcommerce2.dto.response.OrderResponse;
 import africa.semicolon.myEcommerce2.dto.response.RegisterResponse;
 import africa.semicolon.myEcommerce2.exceptions.InvalidInputEnteredException;
 import africa.semicolon.myEcommerce2.exceptions.UserAlreadyExistException;
 import africa.semicolon.myEcommerce2.utils.Mapper;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static africa.semicolon.myEcommerce2.data.model.Role.CUSTOMER;
 
 @Service
-
+@AllArgsConstructor
 public class UserServiceImpl implements UserService{
 
    @Autowired
     private UserRepository userRepository;
+
+   private final OrderService orderService;
+
+   private final ProductService productService;
     @Override
     public RegisterResponse register(RegisterRequest registerRequest) {
         if (userAlreadyExist(registerRequest.getUsername())){
@@ -67,13 +76,38 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public User findByUsername(String username) {
-        return userRepository.findByUsername(username);
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
     }
 
     @Override
     public void deleteAll() {
         userRepository.deleteAll();
+    }
+
+    @Override
+    public User findByUsername(String username) {
+        return userRepository.findByUsername(username);
+    }
+
+
+    @Override
+    public OrderResponse order(OrderRequest orderRequest) {
+        return null;
+    }
+
+    @Override
+    public List<Product> addProduct(Product product) {
+        return null;
+    }
+
+    @Override
+    public List<Product> searchProduct(String productName) {
+
+        return productService.getAllProduct()
+                .stream()
+                .filter(product -> product.getProductName().contains(productName.trim()))
+                .collect(Collectors.toList());
     }
 
 

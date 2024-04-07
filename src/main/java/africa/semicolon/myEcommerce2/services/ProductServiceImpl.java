@@ -3,7 +3,7 @@ package africa.semicolon.myEcommerce2.services;
 import africa.semicolon.myEcommerce2.data.model.Product;
 import africa.semicolon.myEcommerce2.data.repositories.ProductRepository;
 import africa.semicolon.myEcommerce2.dto.request.CreateProductRequest;
-import africa.semicolon.myEcommerce2.exceptions.ProductAlreadyExistException;
+import africa.semicolon.myEcommerce2.dto.response.CreateProductResponse;
 import africa.semicolon.myEcommerce2.exceptions.ProductDoesExistException;
 import africa.semicolon.myEcommerce2.utils.Mapper;
 import lombok.AllArgsConstructor;
@@ -19,13 +19,15 @@ public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
     @Override
-    public Product create(CreateProductRequest createProduct) {
-        if (!productAlreadyExist(createProduct.getProductName())){
-            throw new ProductDoesExistException("this product does not exist");
+    public CreateProductResponse create(CreateProductRequest createProduct) {
+        if (productAlreadyExist(createProduct.getProductName())){
+            throw new ProductDoesExistException("this product Already exist");
         }
         Product product = Mapper.productMapper(createProduct);
-        Product savedProduct = productRepository.save(product);
-        return savedProduct;
+        productRepository.save(product);
+        CreateProductResponse createProductResponse = new CreateProductResponse();
+        createProductResponse.setMessage("product created successfully");
+        return createProductResponse;
     }
 
     @Override
@@ -50,8 +52,13 @@ public class ProductServiceImpl implements ProductService {
     }
 
     private boolean productAlreadyExist(String productName){
-        //return productRepository.findByProductName(productName)!= null;
-        return true;
+        List<Product> productList = productRepository.findAll();
+        for (Product product: productList){
+            if (product.getProductName().equals(productName)){
+                return true;
+            }
+        }
+        return false;
     }
 
 

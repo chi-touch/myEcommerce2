@@ -6,9 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-@Setter
-@Getter
-
+@Data
 public class CreateProductRequest {
     private String productName;
     private ProductType productType;

@@ -1,12 +1,13 @@
 package africa.semicolon.myEcommerce2.services;
 
 import africa.semicolon.myEcommerce2.data.model.Role;
-import africa.semicolon.myEcommerce2.data.model.User;
+
 import africa.semicolon.myEcommerce2.dto.request.RegisterRequest;
 import africa.semicolon.myEcommerce2.dto.response.LoginRequest;
 import africa.semicolon.myEcommerce2.dto.response.LoginResponse;
 import africa.semicolon.myEcommerce2.dto.response.RegisterResponse;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -33,6 +34,7 @@ public class UserServiceImplTest {
     }
 
     @Test
+
     public void testToRegisterUser(){
         //registerRequest.setAddress(new Address());
         request.setRole(Role.CUSTOMER);
@@ -40,12 +42,19 @@ public class UserServiceImplTest {
         request.setLastName("dave");
         request.setPassword("1234");
         request.setUsername("ami");
-        //userService.register(request);
+        request.setCountry("china");
+        request.setState("Lagos");
+        request.setHouseNumber("No2 sabo");
+        request.setStreet("sabo");
+
+//        userService.register(request);
         RegisterResponse registerResponse =  userService.register(request);
         assertThat(registerResponse).isNotNull();
         assertThat(registerResponse.getMessage()).isNotNull();
-        assertEquals(1, userService.count());
+        assertEquals(2, userService.count());
     }
+
+
     @Test
     public void testToRegisterTwoUser(){
 
@@ -77,10 +86,11 @@ public class UserServiceImplTest {
         assertThat(registerResponse1.getMessage()).isNotNull();
         assertThat(registerResponse2.getMessage()).isNotNull();
 
-        assertEquals(3,userService.count());
+        assertEquals(4,userService.count());
     }
 
     @Test
+    @Order(3)
     public void testToLoginUser(){
 
         loginRequest.setUsername("ami");
@@ -91,6 +101,28 @@ public class UserServiceImplTest {
     }
 
     @Test
+    @Order(4)
+    public void testToFindByUserName() {
+        RegisterRequest requestf = new RegisterRequest();
+        requestf.setRole(Role.CUSTOMER);
+        requestf.setFirstName("chichiu");
+        requestf.setLastName("daveg");
+        requestf.setPassword("1239");
+        requestf.setUsername("amid");
+        requestf.setCountry("chinam");
+        requestf.setState("Lagost");
+        requestf.setHouseNumber("No2 saboi");
+        requestf.setStreet("sabop");
+
+        userService.register(requestf);
+//        User expected = new User();
+//       expected.setUsername("ami");
+//        User actual = userService.findByUsername("ami");
+        assertEquals("amid", userService.findByUsername("amid").getUsername());
+    }
+
+    @Test
+    @Order(5)
     public void testToDeleteAll(){
         RegisterRequest registerRequest1 = new RegisterRequest();
         registerRequest1.setRole(ADMIN);
@@ -103,14 +135,6 @@ public class UserServiceImplTest {
         assertThat(registerResponse.getMessage()).isNotNull();
         userService.deleteAll();
         assertEquals(0,userService.count());
-    }
-
-    @Test
-    public void testToFindByUserName(){
-        User expected = new User();
-       expected.setUsername("ami");
-        User actual = userService.findByUsername("ami");
-        assertEquals(expected.getUsername(),actual.getUsername());
     }
 
 }

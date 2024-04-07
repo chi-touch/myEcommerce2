@@ -14,11 +14,14 @@ public class Mapper {
         User myUser = new User();
         myUser.setFirstName(registerRequest.getFirstName());
         myUser.setLastName(registerRequest.getLastName());
-        Address userAddress = new Address();
-        userAddress.setState(String.valueOf(myUser.getAddress()));
-        userAddress.setCountry(String.valueOf(myUser.getAddress()));
-        userAddress.setHouseNumber(String.valueOf(myUser.getAddress()));
-        userAddress.setStreet(String.valueOf(myUser.getAddress()));
+        Address userAddress = Address.builder()
+                .country(registerRequest.getCountry())
+                .state(registerRequest.getState())
+                .street(registerRequest.getStreet())
+                .houseNumber(registerRequest.getHouseNumber())
+                .houseNumber(registerRequest.getHouseNumber())
+                .build();
+
         myUser.setPassword(registerRequest.getPassword());
         myUser.setEmail(registerRequest.getEmail());
         myUser.setRole(registerRequest.getRole());
