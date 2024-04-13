@@ -12,7 +12,7 @@ import java.util.Optional;
 @Repository
 public interface ProductRepository extends MongoRepository<Product, String> {
 
-    List<Product> searchByProductName(String productName);
+    Product searchByProductName(String productName);
     Product deleteByProductName(String productName);
 
     Product findByProductName(String productName);

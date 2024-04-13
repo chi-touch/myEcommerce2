@@ -22,7 +22,7 @@ public class OrderServiceImpl implements OrderService{
     private final OrderRepository orderRepository;
     @Override
     public Order order(OrderRequest orderRequest, String userId, List<Product> productList) {
-        String totalAmount = orderRequest.getAmount();
+        String totalAmount = String.valueOf(orderRequest.getAmount());
         Address address = Address.builder()
                 .state(orderRequest.getState())
                 .country(orderRequest.getCountry())

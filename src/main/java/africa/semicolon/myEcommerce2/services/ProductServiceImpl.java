@@ -4,13 +4,12 @@ import africa.semicolon.myEcommerce2.data.model.Product;
 import africa.semicolon.myEcommerce2.data.repositories.ProductRepository;
 import africa.semicolon.myEcommerce2.dto.request.CreateProductRequest;
 import africa.semicolon.myEcommerce2.dto.response.CreateProductResponse;
-import africa.semicolon.myEcommerce2.exceptions.ProductDoesExistException;
+import africa.semicolon.myEcommerce2.exceptions.ProductAlreadyExistException;
 import africa.semicolon.myEcommerce2.utils.Mapper;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -20,35 +19,17 @@ public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
     @Override
     public CreateProductResponse create(CreateProductRequest createProduct) {
+
         if (productAlreadyExist(createProduct.getProductName())){
-            throw new ProductDoesExistException("this product Already exist");
+            throw new ProductAlreadyExistException("this product already exist");
         }
+
+
         Product product = Mapper.productMapper(createProduct);
         productRepository.save(product);
         CreateProductResponse createProductResponse = new CreateProductResponse();
         createProductResponse.setMessage("product created successfully");
         return createProductResponse;
-    }
-
-    @Override
-    public List<Product> findProductByName(String productName) {
-        return productRepository.searchByProductName(productName);
-    }
-
-    @Override
-    public Product findById(String id) {
-        Optional<Product> product = productRepository.findById(id);
-
-        if (product.isEmpty()){
-            throw new RuntimeException("not found");
-
-        }
-      return product.get();
-    }
-
-    @Override
-    public void delete(String productName) {
-        productRepository.deleteByProductName(productName);
     }
 
     private boolean productAlreadyExist(String productName){
@@ -60,6 +41,29 @@ public class ProductServiceImpl implements ProductService {
         }
         return false;
     }
+
+    @Override
+    public Product findProductByName(String productName) {
+
+        Product product = productRepository.findByProductName(productName);
+        if (product != null) {
+            return product;
+        } else {
+            return null;
+        }
+    }
+
+    private boolean ifProductExist(String productName){
+        return productRepository.searchByProductName(productName) != null;
+    }
+
+
+    @Override
+    public void delete(String productName) {
+        productRepository.deleteByProductName(productName);
+    }
+
+
 
 
     @Override
@@ -74,7 +78,10 @@ public class ProductServiceImpl implements ProductService {
         return productRepository.count();
     }
 
-
+    @Override
+    public void deleteAll() {
+        productRepository.deleteAll();
+    }
 
 
 }

@@ -1,24 +1,25 @@
 package africa.semicolon.myEcommerce2.services;
-import africa.semicolon.myEcommerce2.data.model.Product;
+import africa.semicolon.myEcommerce2.data.model.*;
+import africa.semicolon.myEcommerce2.data.repositories.OrderRepository;
+import africa.semicolon.myEcommerce2.data.repositories.PaymentRepository;
+import africa.semicolon.myEcommerce2.data.repositories.ProductRepository;
 import africa.semicolon.myEcommerce2.data.repositories.UserRepository;
-import africa.semicolon.myEcommerce2.data.model.User;
-import africa.semicolon.myEcommerce2.dto.request.OrderRequest;
-import africa.semicolon.myEcommerce2.dto.request.RegisterRequest;
-import africa.semicolon.myEcommerce2.dto.response.LoginRequest;
-import africa.semicolon.myEcommerce2.dto.response.LoginResponse;
-import africa.semicolon.myEcommerce2.dto.response.OrderResponse;
-import africa.semicolon.myEcommerce2.dto.response.RegisterResponse;
+import africa.semicolon.myEcommerce2.dto.request.*;
+import africa.semicolon.myEcommerce2.dto.response.*;
 import africa.semicolon.myEcommerce2.exceptions.InvalidInputEnteredException;
+import africa.semicolon.myEcommerce2.exceptions.ProductAlreadyExistException;
 import africa.semicolon.myEcommerce2.exceptions.UserAlreadyExistException;
 import africa.semicolon.myEcommerce2.utils.Mapper;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import static africa.semicolon.myEcommerce2.data.model.Role.CUSTOMER;
+
+
 
 @Service
 @AllArgsConstructor
@@ -28,6 +29,15 @@ public class UserServiceImpl implements UserService{
     private UserRepository userRepository;
 
    private final OrderService orderService;
+
+   @Autowired
+   private OrderRepository orderRepository;
+
+   @Autowired
+   private PaymentRepository paymentRepository;
+
+   @Autowired
+   private ProductRepository productRepository;
 
    private final ProductService productService;
     @Override
@@ -86,6 +96,51 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
+    public CreateProductResponse create(CreateProductRequest createProduct) {
+        if (productAlreadyExist(createProduct.getProductName())){
+            throw new ProductAlreadyExistException("this product already exist");
+        }
+
+
+        Product product = Mapper.productMapper(createProduct);
+        productRepository.save(product);
+        CreateProductResponse createProductResponse = new CreateProductResponse();
+        createProductResponse.setMessage("product created successfully");
+        return createProductResponse;
+    }
+
+    private boolean productAlreadyExist(String productName) {
+        return productRepository.findByProductName(productName) != null;
+
+    }
+
+    @Override
+    public Product findProductByName(String productName) {
+        return productRepository.searchByProductName(productName);
+    }
+
+    @Override
+    public List<Product> getAllProduct() {
+        return productRepository.findAll();
+    }
+
+    @Override
+    public PaymentResponse payment(PaymentAtDeliveryRequest paymentAtDeliveryRequest) {
+        if (paymentExist(paymentAtDeliveryRequest.getAmount())< 0){
+            throw new InvalidInputEnteredException("Invalid amount");
+        }
+        Payment payment = Mapper.paymentMapper(paymentAtDeliveryRequest);
+        paymentRepository.save(payment);
+
+        PaymentResponse paymentResponse = new PaymentResponse();
+        paymentResponse.setMessage("Payment is successful");
+        return paymentResponse;
+    }
+    private int paymentExist(BigDecimal amount){
+        return paymentRepository.paidAmount(amount);
+    }
+
+    @Override
     public User findByUsername(String username) {
         return userRepository.findByUsername(username);
     }
@@ -93,21 +148,33 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public OrderResponse order(OrderRequest orderRequest) {
-        return null;
+        Order order = Mapper.orderMapper(orderRequest);
+        orderRepository.save(order);
+
+        OrderResponse orderResponse = new OrderResponse();
+        orderResponse.setMessage("Order placed successfully");
+        return orderResponse;
     }
+
+
 
     @Override
     public List<Product> addProduct(Product product) {
         return null;
     }
 
+
     @Override
     public List<Product> searchProduct(String productName) {
-
-        return productService.getAllProduct()
-                .stream()
-                .filter(product -> product.getProductName().contains(productName.trim()))
-                .collect(Collectors.toList());
+        List<Product> productList = productService.getAllProduct();
+        List<Product> search = new ArrayList<>();
+        String selected = productName.trim();
+        for (Product product : productList) {
+            if (product.getProductName().equals(selected)) {
+                search.add(product);
+            }
+        }
+        return search;
     }
 
 

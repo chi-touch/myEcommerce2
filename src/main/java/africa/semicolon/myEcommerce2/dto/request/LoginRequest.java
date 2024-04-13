@@ -1,4 +1,4 @@
-package africa.semicolon.myEcommerce2.dto.response;
+package africa.semicolon.myEcommerce2.dto.request;
 
 import lombok.Data;
 
