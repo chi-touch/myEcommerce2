@@ -1,14 +1,13 @@
 package africa.semicolon.myEcommerce2.services;
 import africa.semicolon.myEcommerce2.data.model.*;
+import africa.semicolon.myEcommerce2.data.model.Payment;
 import africa.semicolon.myEcommerce2.data.repositories.OrderRepository;
 import africa.semicolon.myEcommerce2.data.repositories.PaymentRepository;
 import africa.semicolon.myEcommerce2.data.repositories.ProductRepository;
 import africa.semicolon.myEcommerce2.data.repositories.UserRepository;
 import africa.semicolon.myEcommerce2.dto.request.*;
 import africa.semicolon.myEcommerce2.dto.response.*;
-import africa.semicolon.myEcommerce2.exceptions.InvalidInputEnteredException;
-import africa.semicolon.myEcommerce2.exceptions.ProductAlreadyExistException;
-import africa.semicolon.myEcommerce2.exceptions.UserAlreadyExistException;
+import africa.semicolon.myEcommerce2.exceptions.*;
 import africa.semicolon.myEcommerce2.utils.Mapper;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +17,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-
+import static africa.semicolon.myEcommerce2.data.model.TransactionStatus.SUCCESS;
 
 
 @Service
@@ -125,24 +124,81 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public PaymentResponse payment(PaymentAtDeliveryRequest paymentAtDeliveryRequest) {
-        if (paymentExist(paymentAtDeliveryRequest.getAmount())< 0){
-            throw new InvalidInputEnteredException("Invalid amount");
+    public PaymentDeliveryResponse delivery(PaymentAtDeliveryRequest paymentAtDeliveryRequest) {
+
+        if (paymentAtDeliveryRequest == null) {
+            throw new InvalidPaymentRequestException("Payment request is null");
         }
-        Payment payment = Mapper.paymentMapper(paymentAtDeliveryRequest);
+        if (paymentAtDeliveryRequest.getAmount().compareTo(BigDecimal.ZERO) <= 0) {
+            throw new InvalidPaymentRequestException("Payment amount should be greater than zero");
+        }
+        if (paymentAtDeliveryRequest.getDeliveryId() == null || paymentAtDeliveryRequest.getDeliveryId().isEmpty()) {
+            throw new InvalidPaymentRequestException("Delivery ID is required");
+        }
+
+        Payment payment = Mapper.mapPayment(paymentAtDeliveryRequest);
         paymentRepository.save(payment);
 
-        PaymentResponse paymentResponse = new PaymentResponse();
-        paymentResponse.setMessage("Payment is successful");
-        return paymentResponse;
+        PaymentDeliveryResponse deliveryResponse = new PaymentDeliveryResponse();
+        deliveryResponse.setMessage("Thank you");
+        return deliveryResponse;
     }
-    private int paymentExist(BigDecimal amount){
-        return paymentRepository.paidAmount(amount);
+
+
+    public TransferResponse transfer(TransferRequest transferRequest) {
+        BigDecimal amount = transferRequest.getAmount();
+        if (amount.compareTo(BigDecimal.ZERO) < 0) {
+            throw new NegativeAmountException("Amount should be positive");
+        }
+
+        if (invalidTransferRequest(transferRequest)) {
+            throw new InvalidTransferRequestException("Invalid transfer request");
+        }
+
+        boolean transferSuccess = performTransfer(transferRequest);
+
+        Payment payment = new Payment();
+        payment.setBalance(transferRequest.getAmount());
+        payment.setAccountNumber(transferRequest.getTo());
+        payment.setAmount(transferRequest.getAmount());
+        payment.setStatus(SUCCESS);
+        paymentRepository.save(payment);
+        TransferResponse response = new TransferResponse();
+        if (transferSuccess) {
+            response.setMessage("Transfer successful");
+            response.setAmountPaid(transferRequest.getAmount());
+        } else {
+            response.setMessage("Transfer failed");
+            response.setAmountPaid(BigDecimal.ZERO);
+        }
+        return response;
+    }
+
+    private boolean invalidTransferRequest(TransferRequest transferRequest) {
+        return transferRequest.getFrom() == null ||
+                transferRequest.getTo() == null ||
+                transferRequest.getAmount() == null ||
+                transferRequest.getPin() == null ||
+                transferRequest.getAmount().compareTo(BigDecimal.ZERO) <= 0;
+    }
+
+    private boolean performTransfer(TransferRequest transferRequest) {
+        System.out.println("Transferring " + transferRequest.getAmount() + " from " + transferRequest.getFrom() +
+                " to " + transferRequest.getTo() + " with description: " + transferRequest.getDescription());
+        return true;
     }
 
     @Override
     public User findByUsername(String username) {
-        return userRepository.findByUsername(username);
+        User myUser = userRepository.findByUsername(username);
+        if (myUser != null) {
+            return  myUser;
+        }
+        throw new UserNameNotFoundException("User not found");
+    }
+
+    private String ifUserNameExist(String username){
+        return userRepository.getByUsername(username);
     }
 
 

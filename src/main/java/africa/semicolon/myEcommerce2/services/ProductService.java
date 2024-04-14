@@ -16,4 +16,6 @@ public interface ProductService {
     Long count();
 
     void deleteAll();
+
+//    List<Product> searchProduct(String productName);
 }

@@ -1,10 +1,8 @@
 package africa.semicolon.myEcommerce2.services;
 
-import africa.semicolon.myEcommerce2.data.model.Order;
-import africa.semicolon.myEcommerce2.data.model.Product;
-import africa.semicolon.myEcommerce2.data.model.Role;
+import africa.semicolon.myEcommerce2.data.model.*;
 
-import africa.semicolon.myEcommerce2.data.model.User;
+import africa.semicolon.myEcommerce2.data.model.Payment;
 import africa.semicolon.myEcommerce2.data.repositories.OrderRepository;
 import africa.semicolon.myEcommerce2.data.repositories.ProductRepository;
 import africa.semicolon.myEcommerce2.data.repositories.UserRepository;
@@ -27,14 +25,14 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 public class UserServiceImplTest {
-
-
-
     RegisterRequest request;
     LoginRequest loginRequest;
     @Autowired
     UserService userService;
 
+
+    @Autowired
+    PaymentService paymentService;
     @Autowired
     OrderService orderService;
     OrderRequest  orderRequest;
@@ -47,6 +45,8 @@ public class UserServiceImplTest {
 
     @Autowired
     ProductRepository productRepository;
+
+    Payment payment;
 
 
     Product product;
@@ -178,8 +178,7 @@ public class UserServiceImplTest {
         assertThat(products).isNotNull();
         assertThat(products).isNotEmpty();
 
-        CreateProductResponse createProductResponse = new CreateProductResponse();
-        assertThat(createProductResponse.getMessage());
+
         assertEquals("cup",userService.searchProduct("cup").get(0).getProductName());
     }
 
@@ -232,8 +231,47 @@ public class UserServiceImplTest {
         Order order = orderService.order(orderRequest, user.getId(), productList);
 
         PaymentAtDeliveryRequest paymentRequest = new PaymentAtDeliveryRequest();
+        paymentRequest.setStatus(TransactionStatus.SUCCESS);
+        paymentRequest.setAmount(BigDecimal.valueOf(2000));
+        paymentRequest.setDeliveryId(user.getId());
+        PaymentDeliveryResponse paymentResponse =  paymentService.atDelivery(paymentRequest);
+        paymentResponse.setMessage("Thank you");
 
+        assertEquals("Thank you", paymentResponse.getMessage());
+    }
 
+    @Test
+    public void testToTransfer(){
+        RegisterRequest registerRequest1 = new RegisterRequest();
+        registerRequest1.setRole(ADMIN);
+        registerRequest1.setFirstName("chichi2");
+        registerRequest1.setLastName("dave2");
+        registerRequest1.setPassword("1235");
+        registerRequest1.setUsername("div2");
+        RegisterResponse registerResponse = userService.register(registerRequest1);
+        List<User> userList = userService.getAllUsers();
+        User user = userList.get(0);
+
+        OrderRequest orderRequest = new OrderRequest();
+        List<Product> productList = new ArrayList<>(List.of(new Product()));
+        orderRequest.setAmount(BigDecimal.valueOf(2000));
+        orderRequest.setCountry("Ghana");
+        orderRequest.setState("Abia");
+        orderRequest.setStreet("Sabo");
+        orderRequest.setHouseNumber("12");
+        Order order = orderService.order(orderRequest, user.getId(), productList);
+
+        TransferRequest transferRequest = new TransferRequest();
+        transferRequest.setPin("pin");
+        transferRequest.setAmount(BigDecimal.valueOf(2000));
+        transferRequest.setTo("me");
+        transferRequest.setFrom("div2");
+        transferRequest.setDescription("kitchen tools");
+
+        TransferResponse transferResponse =  paymentService.transfer(transferRequest);
+        transferResponse.setMessage("Transfer successful");
+
+        assertEquals("Transfer successful", transferResponse.getMessage());
 
     }
 

@@ -7,5 +7,5 @@ import java.math.BigDecimal;
 
 public interface PaymentRepository  extends MongoRepository <Payment, String> {
 
-    int paidAmount(BigDecimal amount);
+
 }

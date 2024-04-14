@@ -6,6 +6,8 @@ import africa.semicolon.myEcommerce2.dto.request.OrderRequest;
 import africa.semicolon.myEcommerce2.dto.request.PaymentAtDeliveryRequest;
 import africa.semicolon.myEcommerce2.dto.request.RegisterRequest;
 
+import static africa.semicolon.myEcommerce2.data.model.TransactionStatus.PENDING;
+
 public class Mapper {
     public static User mapper(RegisterRequest registerRequest){
         User myUser = new User();
@@ -52,12 +54,20 @@ public class Mapper {
         return order;
     }
 
-    public static Payment paymentMapper(PaymentAtDeliveryRequest paymentAtDeliveryRequest){
+//    public static Payment paymentDeliveryMapper(PaymentAtDeliveryRequest paymentAtDeliveryRequest){
+//        Payment payment = new Payment();
+//        payment.setDeliveryId(paymentAtDeliveryRequest.getDeliveryId());
+//        payment.setAmount(paymentAtDeliveryRequest.getAmount());
+//        payment.setAccountNumber(paymentAtDeliveryRequest.getAccountNumber());
+//        payment.setAmount(paymentAtDeliveryRequest.getAmount());
+//        return payment;
+//    }
+
+    public static Payment mapPayment(PaymentAtDeliveryRequest paymentAtDeliveryRequest){
         Payment payment = new Payment();
+        payment.setAmount(paymentAtDeliveryRequest.getAmount());
         payment.setDeliveryId(paymentAtDeliveryRequest.getDeliveryId());
-        payment.setAmount(paymentAtDeliveryRequest.getAmount());
-        payment.setAccountNumber(paymentAtDeliveryRequest.getAccountNumber());
-        payment.setAmount(paymentAtDeliveryRequest.getAmount());
+        payment.setStatus(PENDING);
         return payment;
     }
 

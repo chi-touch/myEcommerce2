@@ -4,11 +4,12 @@ import africa.semicolon.myEcommerce2.data.model.Payment;
 import africa.semicolon.myEcommerce2.data.repositories.PaymentRepository;
 import africa.semicolon.myEcommerce2.dto.request.PaymentAtDeliveryRequest;
 import africa.semicolon.myEcommerce2.dto.request.TransferRequest;
-import africa.semicolon.myEcommerce2.dto.request.WithdrawRequest;
+import africa.semicolon.myEcommerce2.dto.response.PaymentDeliveryResponse;
 import africa.semicolon.myEcommerce2.dto.response.TransferResponse;
 import africa.semicolon.myEcommerce2.exceptions.InvalidPaymentRequestException;
 import africa.semicolon.myEcommerce2.exceptions.InvalidTransferRequestException;
 import africa.semicolon.myEcommerce2.exceptions.NegativeAmountException;
+import africa.semicolon.myEcommerce2.utils.Mapper;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -68,7 +69,7 @@ public class PaymentServiceImpl implements PaymentService{
     }
 
     @Override
-    public Payment atDelivery(PaymentAtDeliveryRequest paymentAtDeliveryRequest) {
+    public PaymentDeliveryResponse atDelivery(PaymentAtDeliveryRequest paymentAtDeliveryRequest) {
         if (paymentAtDeliveryRequest == null) {
             throw new InvalidPaymentRequestException("Payment request is null");
         }
@@ -78,11 +79,12 @@ public class PaymentServiceImpl implements PaymentService{
         if (paymentAtDeliveryRequest.getDeliveryId() == null || paymentAtDeliveryRequest.getDeliveryId().isEmpty()) {
             throw new InvalidPaymentRequestException("Delivery ID is required");
         }
-        Payment payment = new Payment();
-        payment.setAmount(paymentAtDeliveryRequest.getAmount());
-        payment.setDeliveryId(paymentAtDeliveryRequest.getDeliveryId());
-        payment.setStatus(PENDING);
-        return payment;
+        Payment payment = Mapper.mapPayment(paymentAtDeliveryRequest);
+        paymentRepository.save(payment);
+
+        PaymentDeliveryResponse paymentDeliveryResponse = new PaymentDeliveryResponse();
+        paymentDeliveryResponse.setMessage("Thank you");
+        return paymentDeliveryResponse;
     }
 
 }

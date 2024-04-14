@@ -83,5 +83,10 @@ public class ProductServiceImpl implements ProductService {
         productRepository.deleteAll();
     }
 
+//    @Override
+//    public List<Product> searchProduct(String productName) {
+//        return productRepository.findByProductName(productName);
+//    }
+
 
 }

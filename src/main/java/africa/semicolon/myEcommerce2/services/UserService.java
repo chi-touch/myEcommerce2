@@ -30,5 +30,7 @@ public interface UserService {
 
     List<Product>getAllProduct();
 
-    PaymentResponse payment(PaymentAtDeliveryRequest paymentAtDeliveryRequest);
+    TransferResponse transfer(TransferRequest transferRequest);
+
+    PaymentDeliveryResponse delivery(PaymentAtDeliveryRequest paymentAtDeliveryRequest);
 }

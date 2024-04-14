@@ -1,6 +1,8 @@
 package africa.semicolon.myEcommerce2.controllers;
 
+import africa.semicolon.myEcommerce2.dto.request.PaymentAtDeliveryRequest;
 import africa.semicolon.myEcommerce2.dto.request.TransferRequest;
+import africa.semicolon.myEcommerce2.dto.response.PaymentDeliveryResponse;
 import africa.semicolon.myEcommerce2.dto.response.TransferResponse;
 import africa.semicolon.myEcommerce2.services.PaymentService;
 import lombok.AllArgsConstructor;
@@ -21,6 +23,11 @@ public class PaymentController {
     @PostMapping("transfer")
     public ResponseEntity<TransferResponse> transfer(@RequestBody TransferRequest transferRequest){
         TransferResponse response = paymentService.transfer(transferRequest);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+    @PostMapping("/atDelivery")
+    public ResponseEntity<PaymentDeliveryResponse> atDelivery(@RequestBody PaymentAtDeliveryRequest paymentAtDeliveryRequest){
+        PaymentDeliveryResponse response = paymentService.atDelivery(paymentAtDeliveryRequest);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 }
