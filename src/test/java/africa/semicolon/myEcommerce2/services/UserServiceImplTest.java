@@ -33,6 +33,10 @@ public class UserServiceImplTest {
 
     @Autowired
     PaymentService paymentService;
+
+
+    @Autowired
+    ProductService productService;
     @Autowired
     OrderService orderService;
     OrderRequest  orderRequest;
@@ -172,14 +176,14 @@ public class UserServiceImplTest {
         createProductRequest.setProductType(UTENSILS);
         createProductRequest.setPrice(BigDecimal.valueOf(1000));
         createProductRequest.setDescription("kitchen tools");
-        userService.create(createProductRequest);
+        productService.create(createProductRequest);
 
-        List<Product> products = userService.searchProduct("cup");
-        assertThat(products).isNotNull();
-        assertThat(products).isNotEmpty();
+        SearchProductRequest searchRequest = new SearchProductRequest();
+        searchRequest.setProductName("cup");
 
+        var ViewAllProductResponse = productService.searchProductByName("cup");
 
-        assertEquals("cup",userService.searchProduct("cup").get(0).getProductName());
+        assertEquals(1,userService.searchProductByName("cup").size());
     }
 
     @Test
@@ -191,12 +195,12 @@ public class UserServiceImplTest {
         registerRequest1.setPassword("1235");
         registerRequest1.setUsername("div2");
         RegisterResponse registerResponse = userService.register(registerRequest1);
-        List<User> userList = userService.getAllUsers();
-        User user = userList.get(0);
+        List<EcommerceUser> userList = userService.getAllUsers();
+        EcommerceUser user = userList.get(0);
         OrderRequest orderRequest = new OrderRequest();
 
         List<Product> productList = new ArrayList<>(List.of(new Product()));
-        orderRequest.setAmount(BigDecimal.valueOf(2000));
+        //orderRequest.setAmount(BigDecimal.valueOf(2000));
         orderRequest.setCountry("Ghana");
         orderRequest.setState("Abia");
         orderRequest.setStreet("Sabo");
@@ -218,12 +222,12 @@ public class UserServiceImplTest {
         registerRequest1.setPassword("1235");
         registerRequest1.setUsername("div2");
         RegisterResponse registerResponse = userService.register(registerRequest1);
-        List<User> userList = userService.getAllUsers();
-        User user = userList.get(0);
+        List<EcommerceUser> userList = userService.getAllUsers();
+        EcommerceUser user = userList.get(0);
         OrderRequest orderRequest = new OrderRequest();
 
         List<Product> productList = new ArrayList<>(List.of(new Product()));
-        orderRequest.setAmount(BigDecimal.valueOf(2000));
+//        orderRequest.setAmount(BigDecimal.valueOf(2000));
         orderRequest.setCountry("Ghana");
         orderRequest.setState("Abia");
         orderRequest.setStreet("Sabo");
@@ -249,12 +253,12 @@ public class UserServiceImplTest {
         registerRequest1.setPassword("1235");
         registerRequest1.setUsername("div2");
         RegisterResponse registerResponse = userService.register(registerRequest1);
-        List<User> userList = userService.getAllUsers();
-        User user = userList.get(0);
+        List<EcommerceUser> userList = userService.getAllUsers();
+        EcommerceUser user = userList.get(0);
 
         OrderRequest orderRequest = new OrderRequest();
         List<Product> productList = new ArrayList<>(List.of(new Product()));
-        orderRequest.setAmount(BigDecimal.valueOf(2000));
+//        orderRequest.setAmount(BigDecimal.valueOf(2000));
         orderRequest.setCountry("Ghana");
         orderRequest.setState("Abia");
         orderRequest.setStreet("Sabo");

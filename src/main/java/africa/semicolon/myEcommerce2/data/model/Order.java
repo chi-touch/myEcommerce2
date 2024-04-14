@@ -19,10 +19,17 @@ public class Order {
     @Id
     private String id;
 
-    private List<Product> productList = new ArrayList<>();
+   private List<Product> productList = new ArrayList<>();
     private BigDecimal amount;
-    private String productStatus;
-    private String deliveryDate = String.valueOf(LocalDate.now());
+    //private String productStatus;
+    private String deliveryDate = deliveryAt();
+
+    private  String deliveryAt(){
+        LocalDateTime  time = LocalDateTime.now();
+
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yy HH:mm:ss");
+        return time.format(dateTimeFormatter);
+   }
     private OrderStatus orderStatus;
     private Address address;
 

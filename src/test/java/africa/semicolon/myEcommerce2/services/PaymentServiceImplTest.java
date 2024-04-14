@@ -2,7 +2,7 @@ package africa.semicolon.myEcommerce2.services;
 
 import africa.semicolon.myEcommerce2.dto.request.TransferRequest;
 import africa.semicolon.myEcommerce2.dto.response.TransferResponse;
-import africa.semicolon.myEcommerce2.exceptions.InvalidTransferAmountException;
+//import africa.semicolon.myEcommerce2.exceptions.InvalidTransferAmountException;
 import africa.semicolon.myEcommerce2.exceptions.NegativeAmountException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

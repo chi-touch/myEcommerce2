@@ -14,7 +14,7 @@ import java.util.List;
 
 @Data
 @Document
-public class User {
+public class EcommerceUser {
     @Id
     private String id;
     private String firstName;

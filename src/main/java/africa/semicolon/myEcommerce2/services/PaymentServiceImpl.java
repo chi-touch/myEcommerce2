@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 
-import static africa.semicolon.myEcommerce2.data.model.TransactionStatus.PENDING;
 import static africa.semicolon.myEcommerce2.data.model.TransactionStatus.SUCCESS;
 
 @Service
@@ -79,7 +78,7 @@ public class PaymentServiceImpl implements PaymentService{
         if (paymentAtDeliveryRequest.getDeliveryId() == null || paymentAtDeliveryRequest.getDeliveryId().isEmpty()) {
             throw new InvalidPaymentRequestException("Delivery ID is required");
         }
-        Payment payment = Mapper.mapPayment(paymentAtDeliveryRequest);
+        Payment payment = Mapper.paymentDeliveryMapper(paymentAtDeliveryRequest);
         paymentRepository.save(payment);
 
         PaymentDeliveryResponse paymentDeliveryResponse = new PaymentDeliveryResponse();

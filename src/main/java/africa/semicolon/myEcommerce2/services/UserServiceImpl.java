@@ -44,7 +44,7 @@ public class UserServiceImpl implements UserService{
         if (userAlreadyExist(registerRequest.getUsername())){
             throw new UserAlreadyExistException("this user already exist");
         }
-       User user = Mapper.mapper(registerRequest);
+       EcommerceUser user = Mapper.mapper(registerRequest);
         userRepository.save(user);
         RegisterResponse registerResponse = new RegisterResponse();
         registerResponse.setMessage("Registration is successful");
@@ -63,7 +63,7 @@ public class UserServiceImpl implements UserService{
     public LoginResponse login(LoginRequest loginRequest) {
         String username = loginRequest.getUsername();
         String password = loginRequest.getPassword();
-        User foundUser = userRepository.findByUsername(loginRequest.getUsername());
+        EcommerceUser foundUser = userRepository.findByUsername(loginRequest.getUsername());
         foundUser.setLocked(false);
         userRepository.save(foundUser);
         if (isValidUsernameAndPassword(username, password)) {
@@ -75,8 +75,8 @@ public class UserServiceImpl implements UserService{
         }
     }
     private boolean isValidUsernameAndPassword(String username, String password) {
-        List<User> userList = userRepository.findAll();
-        for (User user : userList) {
+        List<EcommerceUser> userList = userRepository.findAll();
+        for (EcommerceUser user : userList) {
             if (user.getUsername().equals(username) && user.getPassword().equals(password)) {
                 return true;
             }
@@ -85,8 +85,13 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public List<User> getAllUsers() {
+    public List<EcommerceUser> getAllUsers() {
         return userRepository.findAll();
+    }
+
+    @Override
+    public List<Product> searchProductByName(String productName) {
+        return productRepository.findByProductName(productName);
     }
 
     @Override
@@ -136,7 +141,7 @@ public class UserServiceImpl implements UserService{
             throw new InvalidPaymentRequestException("Delivery ID is required");
         }
 
-        Payment payment = Mapper.mapPayment(paymentAtDeliveryRequest);
+        Payment payment = Mapper.paymentDeliveryMapper(paymentAtDeliveryRequest);
         paymentRepository.save(payment);
 
         PaymentDeliveryResponse deliveryResponse = new PaymentDeliveryResponse();
@@ -189,8 +194,8 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public User findByUsername(String username) {
-        User myUser = userRepository.findByUsername(username);
+    public EcommerceUser findByUsername(String username) {
+        EcommerceUser myUser = userRepository.findByUsername(username);
         if (myUser != null) {
             return  myUser;
         }
@@ -220,18 +225,48 @@ public class UserServiceImpl implements UserService{
     }
 
 
-    @Override
-    public List<Product> searchProduct(String productName) {
-        List<Product> productList = productService.getAllProduct();
-        List<Product> search = new ArrayList<>();
-        String selected = productName.trim();
-        for (Product product : productList) {
-            if (product.getProductName().equals(selected)) {
-                search.add(product);
-            }
+//    @Override
+//    public List<Product> searchProduct(String productName) {
+//
+//        List<Product> productList = productService.getAllProduct();
+//        List<Product> search = new ArrayList<>();
+//        String selected = productName.trim();
+//        for (Product product : productList) {
+//            if (product.getProductName().equals(selected)) {
+//                search.add(product);
+//            }
+//        }
+//        return search;
+//    }
+
+    public List<ViewAllProductResponse> searchProducts(SearchProductRequest searchProductRequest){
+        Product foundUser =findProductByName(searchProductRequest.getProductName());
+        String productName = searchProductRequest.getProductName();
+        List <Product> foundProducts = productService.searchProductByName(productName);
+        List<ViewAllProductResponse> search = new ArrayList<>();
+        for (Product product : foundProducts){
+            ViewAllProductResponse viewAllProductResponse = new ViewAllProductResponse();
+            search.add(viewAllProductResponse);
         }
         return search;
+
     }
+
+
+    public List<ViewAllProductResponse> viewAllContact(SearchProductRequest searchProductRequest) {
+
+        Product myProduct = findProductByName(searchProductRequest.getProductName());
+        List<Product> viewAllProducts =  productService.viewProducts(myProduct);
+        List<ViewAllProductResponse> productResponseList = new ArrayList<>();
+        for (Product product : viewAllProducts){
+            ViewAllProductResponse viewAllProductResponse = productResponseList.get(0);
+            productResponseList.add(viewAllProductResponse);
+
+        }
+        return productResponseList;
+
+    }
+
 
 
 }

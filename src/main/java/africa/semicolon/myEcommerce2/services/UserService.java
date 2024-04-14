@@ -1,7 +1,7 @@
 package africa.semicolon.myEcommerce2.services;
 
 import africa.semicolon.myEcommerce2.data.model.Product;
-import africa.semicolon.myEcommerce2.data.model.User;
+import africa.semicolon.myEcommerce2.data.model.EcommerceUser;
 import africa.semicolon.myEcommerce2.dto.request.*;
 import africa.semicolon.myEcommerce2.dto.response.*;
 
@@ -13,15 +13,17 @@ public interface UserService {
     long count();
     LoginResponse login(LoginRequest loginRequest);
 
-    User findByUsername(String username);
+    EcommerceUser findByUsername(String username);
 
     OrderResponse order(OrderRequest orderRequest);
 
     List<Product> addProduct(Product product);
 
-    List<Product> searchProduct(String productName);
+     List<ViewAllProductResponse> searchProducts(SearchProductRequest searchProductRequest);
 
-    List<User> getAllUsers();
+    List<EcommerceUser> getAllUsers();
+
+    List<Product> searchProductByName(String productName);
 
     void deleteAll();
 

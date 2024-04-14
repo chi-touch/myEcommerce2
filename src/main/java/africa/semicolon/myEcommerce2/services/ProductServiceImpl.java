@@ -3,12 +3,15 @@ package africa.semicolon.myEcommerce2.services;
 import africa.semicolon.myEcommerce2.data.model.Product;
 import africa.semicolon.myEcommerce2.data.repositories.ProductRepository;
 import africa.semicolon.myEcommerce2.dto.request.CreateProductRequest;
+import africa.semicolon.myEcommerce2.dto.request.SearchProductRequest;
 import africa.semicolon.myEcommerce2.dto.response.CreateProductResponse;
+import africa.semicolon.myEcommerce2.dto.response.ViewAllProductResponse;
 import africa.semicolon.myEcommerce2.exceptions.ProductAlreadyExistException;
 import africa.semicolon.myEcommerce2.utils.Mapper;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -45,7 +48,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public Product findProductByName(String productName) {
 
-        Product product = productRepository.findByProductName(productName);
+        Product product = productRepository.searchByProductName(productName);
         if (product != null) {
             return product;
         } else {
@@ -83,9 +86,53 @@ public class ProductServiceImpl implements ProductService {
         productRepository.deleteAll();
     }
 
-//    @Override
-//    public List<Product> searchProduct(String productName) {
-//        return productRepository.findByProductName(productName);
+    @Override
+    public List<Product> searchProductByName(String productName) {
+        return productRepository.findByProductName(productName);
+    }
+
+    @Override
+    public List<Product> viewProducts(Product myProduct) {
+        return productRepository.findAll();
+    }
+
+    @Override
+    public List<Product> searchProducts(SearchProductRequest searchRequest) {
+        return null;
+    }
+//        Product foundUser =findProductByName(searchRequest.getProductName());
+//        String productName = searchRequest.getProductName();
+//        List <Product> foundProducts = .searchProductByName(productName);
+//        List<ViewAllProductResponse> search = new ArrayList<>();
+//        for (Product product : foundProducts){
+//            iewAllProductResponse viewAllProductResponse = new ViewAllProductResponse();
+//            search.add(viewAllProductResponse);
+//        }
+//        return search;
+//
+//    }
+
+
+
+
+//    public List<Product> searchProductByName(Product myProduct, String searchName) {
+//        List<Product> foundProduct = new ArrayList<>();
+//        for (Product product : foundProductget()) {
+//            if (myProduct.getProductName().contains(searchName)) {
+//                foundProduct.add(myProduct);
+//            }
+//        }
+//        return foundProduct;
+//    }
+
+//    public List<Contact> searchContactsByName(User foundUser, String searchName) {
+//        List<Contact> foundContact = new ArrayList<>();
+//        for (Contact contact : foundUser.getContacts()) {
+//            if (contact.getName().contains(searchName)) {
+//                foundContact.add(contact);
+//            }
+//        }
+//        return foundContact;
 //    }
 
 
