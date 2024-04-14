@@ -25,8 +25,6 @@ public class EcommerceUser {
     private Role role;
     private String username;
     private boolean isLocked;
-    private String dateCreated;
-
     @DBRef
     private Payment payment;
 
