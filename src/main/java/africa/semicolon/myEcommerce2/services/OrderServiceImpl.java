@@ -36,6 +36,7 @@ public class OrderServiceImpl implements OrderService{
         order.setAddress(address);
         order.setOrderStatus(SUCCESS);
         order.setId(userId);
+        order.setProductList(orderRequest.getProductList());
 
         Order savedOrder = orderRepository.save(order);
         return savedOrder;

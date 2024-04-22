@@ -21,9 +21,9 @@ public class Order {
 
    private List<Product> productList = new ArrayList<>();
     private BigDecimal amount;
-    //private String productStatus;
     private String deliveryDate = deliveryAt();
-
+    private String productName;
+    private int productQuantity;
     private  String deliveryAt(){
         LocalDateTime  time = LocalDateTime.now();
 
@@ -32,6 +32,7 @@ public class Order {
    }
     private OrderStatus orderStatus;
     private Address address;
+    //private Address deliveryAddress = new Address();
 
     private String createTime = createdAt();
 

@@ -22,6 +22,8 @@ public class OrderRequest {
     private String country;
     private String street;
     private String houseNumber;
+    private int productQuantity;
+    private String productName;
 
     @DBRef
     private List<Product> productList;

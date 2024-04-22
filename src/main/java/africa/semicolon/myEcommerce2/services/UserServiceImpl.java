@@ -220,8 +220,16 @@ public class UserServiceImpl implements UserService{
 
 
     @Override
-    public List<Product> addProduct(Product product) {
-        return null;
+    public AddProductResponse addProduct(AddProductRequest addProductRequest){
+        Order order = new Order();
+        order.setProductName(addProductRequest.getProductName());
+        order.setProductQuantity(addProductRequest.getProductQuantity());
+        orderRepository.save(order);
+
+        AddProductResponse addProductResponse = new AddProductResponse();
+        addProductResponse.setMessage("Product was added successfully");
+        return addProductResponse;
+
     }
 
 

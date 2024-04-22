@@ -19,6 +19,7 @@ public class Payment {
     private String deliveryId;
     private BigDecimal amount;
     private TransactionStatus status;
+    private CreditCardInformation creditCardInfo = new CreditCardInformation();
 
     private String createTime = createdAt();
     private String createdAt(){
@@ -26,5 +27,7 @@ public class Payment {
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yy HH:mm:ss");
         return date.format(dateTimeFormatter);
     }
+
+
 
 }

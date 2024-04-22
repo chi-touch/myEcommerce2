@@ -17,7 +17,7 @@ public interface UserService {
 
     OrderResponse order(OrderRequest orderRequest);
 
-    List<Product> addProduct(Product product);
+    AddProductResponse addProduct(AddProductRequest addProductRequest);
 
      List<ViewAllProductResponse> searchProducts(SearchProductRequest searchProductRequest);
 

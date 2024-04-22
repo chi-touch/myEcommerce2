@@ -49,6 +49,7 @@ public class Mapper {
                 .street(orderRequest.getStreet())
                 .houseNumber(orderRequest.getHouseNumber())
                 .build();
+        order.setProductList(orderRequest.getProductList());
        // order.setAmount(orderRequest.getAmount());
 //        order.setDeliveryDate(orderRequest.getDeliveryDate());
         return order;
