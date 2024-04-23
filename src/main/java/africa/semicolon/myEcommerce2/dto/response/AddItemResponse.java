@@ -1,12 +1,12 @@
 package africa.semicolon.myEcommerce2.dto.response;
 
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
-@Getter
 @Setter
-public class LoginResponse {
-    private String message;
+@Getter
+public class AddItemResponse {
     private String username;
-    private boolean isLoggedIn;
+    //private ShoppingCart shoppingCart;
 }

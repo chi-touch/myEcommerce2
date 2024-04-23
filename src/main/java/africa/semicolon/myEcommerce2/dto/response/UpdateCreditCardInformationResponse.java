@@ -3,10 +3,9 @@ package africa.semicolon.myEcommerce2.dto.response;
 import lombok.Getter;
 import lombok.Setter;
 
-@Getter
 @Setter
-public class LoginResponse {
-    private String message;
+@Getter
+public class UpdateCreditCardInformationResponse {
     private String username;
-    private boolean isLoggedIn;
+    private String paymentInformation;
 }
