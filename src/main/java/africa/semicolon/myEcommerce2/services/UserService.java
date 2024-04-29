@@ -13,11 +13,16 @@ public interface UserService {
     long count();
     LoginResponse login(LoginRequest loginRequest);
 
+    LogOutResponse logOut(LoginRequest loginRequest);
+
+    AddItemResponse addItem(AddProductRequest addProductRequest);
+    AddProductResponse addProduct(AddProductRequest addProductRequest);
+
+    RemoveItemResponse removeItem(RemoveItemResponse removeItemResponse);
+
     EcommerceUser findByUsername(String username);
 
     OrderResponse order(OrderRequest orderRequest);
-
-    AddProductResponse addProduct(AddProductRequest addProductRequest);
 
      List<ViewAllProductResponse> searchProducts(SearchProductRequest searchProductRequest);
 
