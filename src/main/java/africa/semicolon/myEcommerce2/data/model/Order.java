@@ -5,6 +5,7 @@ import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import javax.sql.RowSet;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -13,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
+
 @Document
 public class Order {
 
@@ -43,5 +45,7 @@ public class Order {
         return date.format(dateTimeFormatter);
     }
 
+
+    private EcommerceUser buyer;
 
 }

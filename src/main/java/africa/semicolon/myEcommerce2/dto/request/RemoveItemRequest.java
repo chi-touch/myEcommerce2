@@ -5,7 +5,6 @@ import lombok.Data;
 @Data
 public class RemoveItemRequest {
 
-    private String username;
-    //@NotNull(message = "Product id cannot be null")
+    private String itemName;
     private String productId;
 }

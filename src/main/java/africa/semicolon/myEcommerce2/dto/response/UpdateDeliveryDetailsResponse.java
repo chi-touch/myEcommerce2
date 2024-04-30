@@ -5,6 +5,6 @@ import lombok.Setter;
 
 @Setter
 @Getter
-public class RemoveProductResponse {
+public class UpdateDeliveryDetailsResponse {
     private String message;
 }

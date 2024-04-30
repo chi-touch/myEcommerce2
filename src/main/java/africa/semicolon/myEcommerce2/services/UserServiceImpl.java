@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static africa.semicolon.myEcommerce2.data.model.TransactionStatus.SUCCESS;
+import static africa.semicolon.myEcommerce2.utils.Mapper.mapLogoutResponseWith;
 
 
 @Service
@@ -74,6 +75,25 @@ public class UserServiceImpl implements UserService{
             throw new InvalidInputEnteredException("Invalid username or password");
         }
     }
+
+    @Override
+    public LogOutResponse logOut(LogOutRequest logOutRequest) {
+        if (logOutRequest.getUsername() == null){
+            throw new InvalidInputEnteredException("Invalid username or password");
+        }
+        EcommerceUser foundUser = findByUsername(logOutRequest.getUsername());
+
+        foundUser.setLocked(true);
+        LogOutResponse logOutResponse = new LogOutResponse();
+        logOutResponse.setMessage("Logout successful");
+        return logOutResponse;
+    }
+
+    @Override
+    public AddItemResponse addItem(AddProductRequest addProductRequest) {
+        return null;
+    }
+
     private boolean isValidUsernameAndPassword(String username, String password) {
         List<EcommerceUser> userList = userRepository.findAll();
         for (EcommerceUser user : userList) {
@@ -230,6 +250,49 @@ public class UserServiceImpl implements UserService{
         addProductResponse.setMessage("Product was added successfully");
         return addProductResponse;
 
+    }
+
+
+    @Override
+    public RemoveProductResponse removeProduct(RemoveProductRequest removeProductRequest) {
+        if (removeProductRequest.getProductName() == null) {
+            throw new InvalidInputEnteredException("This product name does not exist");
+        }
+        Product product = productRepository.deleteByProductName(removeProductRequest.getProductName());
+        RemoveProductResponse removeResponse = new RemoveProductResponse();
+        removeResponse.setMessage("Product was successfully removed");
+        return removeResponse;
+    }
+
+    @Override
+    public ViewCartResponse viewCart(ViewCartRequest viewCartRequest) {
+
+        return null;
+    }
+
+    @Override
+    public UpdateDeliveryDetailsResponse updateDelivery(UpdateDeliveryDetailsRequest updateDeliveryRequest) {
+        return null;
+    }
+
+    @Override
+    public UpdateCreditCardInformationResponse updateCard(UpdateCreditCardInformationResponse updateCreditCardInformationResponse) {
+        return null;
+    }
+
+    @Override
+    public CheckOutResponse checkOut(CheckOutRequest checkOutRequest) {
+        return null;
+    }
+
+    @Override
+    public ViewOrderResponse viewOrder(ViewOrderResponse viewOrderResponse) {
+        return null;
+    }
+
+    @Override
+    public ViewAllOrderResponse viewAll(ViewAllUserOrdersRequest viewAllUserOrdersRequest) {
+        return null;
     }
 
 

@@ -2,10 +2,9 @@ package africa.semicolon.myEcommerce2.utils;
 
 import africa.semicolon.myEcommerce2.data.model.*;
 //import africa.semicolon.myEcommerce2.dto.request.CreateProductRequest;
-import africa.semicolon.myEcommerce2.dto.request.CreateProductRequest;
-import africa.semicolon.myEcommerce2.dto.request.OrderRequest;
-import africa.semicolon.myEcommerce2.dto.request.PaymentAtDeliveryRequest;
-import africa.semicolon.myEcommerce2.dto.request.RegisterRequest;
+import africa.semicolon.myEcommerce2.dto.request.*;
+import africa.semicolon.myEcommerce2.dto.response.CheckOutResponse;
+import africa.semicolon.myEcommerce2.dto.response.LogOutResponse;
 
 import static africa.semicolon.myEcommerce2.data.model.TransactionStatus.PENDING;
 
@@ -52,7 +51,15 @@ public class Mapper {
         order.setProductList(orderRequest.getProductList());
        // order.setAmount(orderRequest.getAmount());
 //        order.setDeliveryDate(orderRequest.getDeliveryDate());
-        return order;
+        return  order;
+    }
+
+    public static CheckOutResponse mapCheckoutResponse(Order order) {
+        CheckOutResponse checkoutResponse = new CheckOutResponse();
+        checkoutResponse.setUsername(order.getBuyer().getUsername());
+        checkoutResponse.setOrderId(order.getId());
+
+        return checkoutResponse;
     }
 
     public static Payment paymentDeliveryMapper(PaymentAtDeliveryRequest paymentAtDeliveryRequest){
@@ -61,6 +68,15 @@ public class Mapper {
         payment.setDeliveryId(paymentAtDeliveryRequest.getDeliveryId());
         payment.setStatus(PENDING);
         return payment;
+    }
+
+    public static LogOutResponse mapLogoutResponseWith(LogOutRequest logOutRequest) {
+
+        LogOutResponse logoutResponse = new LogOutResponse();
+        logoutResponse.setId(user.getId());
+        logoutResponse.setUsername(user.getUsername());
+        logoutResponse.setLoggedIn(false);
+        return logoutResponse;
     }
 
 

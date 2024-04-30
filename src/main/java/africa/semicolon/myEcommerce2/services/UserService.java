@@ -13,12 +13,26 @@ public interface UserService {
     long count();
     LoginResponse login(LoginRequest loginRequest);
 
-    LogOutResponse logOut(LoginRequest loginRequest);
+    LogOutResponse logOut(LogOutRequest logOutRequest);
 
     AddItemResponse addItem(AddProductRequest addProductRequest);
     AddProductResponse addProduct(AddProductRequest addProductRequest);
 
     RemoveItemResponse removeItem(RemoveItemResponse removeItemResponse);
+
+    RemoveProductResponse removeProduct(RemoveProductRequest removeProductRequest);
+
+    ViewCartResponse viewCart(ViewCartRequest viewCartRequest);
+
+    UpdateDeliveryDetailsResponse updateDelivery(UpdateDeliveryDetailsRequest updateDeliveryRequest);
+
+    UpdateCreditCardInformationResponse updateCard(UpdateCreditCardInformationResponse updateCreditCardInformationResponse);
+
+    CheckOutResponse checkOut(CheckOutRequest checkOutRequest);
+
+    ViewOrderResponse viewOrder(ViewOrderResponse viewOrderResponse);
+
+    ViewAllOrderResponse viewAll(ViewAllUserOrdersRequest viewAllUserOrdersRequest);
 
     EcommerceUser findByUsername(String username);
 

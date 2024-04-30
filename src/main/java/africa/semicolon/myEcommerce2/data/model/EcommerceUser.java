@@ -42,5 +42,6 @@ public class EcommerceUser {
     }
 
 
+    private boolean logOut;
 
 }

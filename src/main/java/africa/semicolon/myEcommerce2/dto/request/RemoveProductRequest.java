@@ -1,12 +1,11 @@
 package africa.semicolon.myEcommerce2.dto.request;
 
 
+import africa.semicolon.myEcommerce2.data.model.Product;
 import lombok.Data;
 
 @Data
 public class RemoveProductRequest {
-   // @NotNull(message = "Username cannot be null")
-    private String username;
-   // @NotNull(message = "Product ID cannot be null")
+    private String productName;
     private String productId;
 }
