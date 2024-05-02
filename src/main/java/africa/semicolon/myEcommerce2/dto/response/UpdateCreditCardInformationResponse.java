@@ -8,4 +8,5 @@ import lombok.Setter;
 public class UpdateCreditCardInformationResponse {
     private String username;
     private String paymentInformation;
+    private String message;
 }
