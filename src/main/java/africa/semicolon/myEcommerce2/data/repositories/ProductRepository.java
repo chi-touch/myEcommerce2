@@ -19,7 +19,7 @@ public interface ProductRepository extends MongoRepository<Product, String> {
 
    List<Product> findByProductName(String productName);
 
-    Product addMyProduct(AddProductRequest addProductRequest);
+   // Product addMyProduct(AddProductRequest addProductRequest);
 
 
     //    Product findByProductName(String productName);

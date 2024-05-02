@@ -149,7 +149,7 @@ public class UserServiceImpl implements UserService{
         Product product = Mapper.productMapper(createProduct);
         productRepository.save(product);
         CreateProductResponse createProductResponse = new CreateProductResponse();
-        createProductResponse.setMessage("product created successfully");
+        createProductResponse.setMessage("product is created successfully");
         return createProductResponse;
     }
 

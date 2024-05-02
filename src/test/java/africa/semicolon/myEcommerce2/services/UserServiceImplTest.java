@@ -279,6 +279,45 @@ public class UserServiceImplTest {
 
     }
 
+    @Test
+    public void testToCreatProduct(){
+        CreateProductRequest createProductRequest = new CreateProductRequest();
+        createProductRequest.setProductName("cup");
+        createProductRequest.setProductType(UTENSILS);
+        createProductRequest.setPrice(BigDecimal.valueOf(1000));
+        createProductRequest.setDescription("kitchen tools");
+        CreateProductResponse createProductResponse = productService.create(createProductRequest);
+
+        assertThat(createProductResponse).isNotNull();
+        assertThat(createProductResponse.getMessage()).isNotNull();
+        assertEquals("cup", productService.findProductByName("cup").getProductName());
+    }
+
+    @Test
+    public void testToCreatMoreProduct(){
+        CreateProductRequest createProductRequest = new CreateProductRequest();
+        createProductRequest.setProductName("cup");
+        createProductRequest.setProductType(UTENSILS);
+        createProductRequest.setPrice(BigDecimal.valueOf(1000));
+        createProductRequest.setDescription("kitchen tools");
+        CreateProductResponse createProductResponse = productService.create(createProductRequest);
+
+        CreateProductRequest createProductRequest1 = new CreateProductRequest();
+        createProductRequest1.setProductName("spoon");
+        createProductRequest1.setProductType(UTENSILS);
+        createProductRequest1.setPrice(BigDecimal.valueOf(500));
+        createProductRequest1.setDescription("kitchen tools");
+        CreateProductResponse createProductResponse1 = productService.create(createProductRequest1);
+
+        assertEquals("cup", productService.findProductByName("cup").getProductName());
+        assertEquals("spoon", productService.findProductByName("spoon").getProductName());
+    }
+
+
+    @Test
+    public void testToAddProduct(){
+
+    }
 
 
 }
