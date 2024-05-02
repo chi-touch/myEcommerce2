@@ -261,9 +261,9 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public AddProductResponse addProduct(AddProductRequest addProductRequest){
-        if (addProductRequest.getUsername() == null){
-            throw new InvalidInputEnteredException("Invalid username or password");
-        }
+//        if (addProductRequest.getUsername() == null){
+//            throw new InvalidInputEnteredException("Invalid username or password");
+//        }
 
         Product product = new Product();
         product.setProductName(addProductRequest.getProductName());
@@ -282,11 +282,11 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public RemoveProductResponse removeProduct(RemoveProductRequest removeProductRequest) {
-        if (removeProductRequest.getProductName() == null) {
+    public RemoveProductResponse removeProduct(String productName) {
+        if (productName == null) {
             throw new InvalidInputEnteredException("This product name does not exist");
         }
-        Product product = productRepository.deleteByProductName(removeProductRequest.getProductName());
+        Product product = productRepository.deleteByProductName(productName);
         RemoveProductResponse removeResponse = new RemoveProductResponse();
         removeResponse.setMessage("Product was successfully removed");
         return removeResponse;

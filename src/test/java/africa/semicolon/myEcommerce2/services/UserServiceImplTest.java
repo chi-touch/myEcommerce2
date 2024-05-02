@@ -309,15 +309,69 @@ public class UserServiceImplTest {
         createProductRequest1.setDescription("kitchen tools");
         CreateProductResponse createProductResponse1 = productService.create(createProductRequest1);
 
-        assertEquals("cup", productService.findProductByName("cup").getProductName());
-        assertEquals("spoon", productService.findProductByName("spoon").getProductName());
+        assertEquals("cup", userService.findProductByName("cup").getProductName());
+        assertEquals("spoon", userService.findProductByName("spoon").getProductName());
     }
 
 
     @Test
-    public void testToAddProduct(){
+    public void testToAddProduct() {
+        AddProductRequest addProductRequest = new AddProductRequest();
+        addProductRequest.setProductName("cup");
+        addProductRequest.setProductType(UTENSILS);
+        addProductRequest.setPrice(BigDecimal.valueOf(1000));
+        addProductRequest.setDescription("kitchen tools");
+
+        AddProductResponse addProductResponse = userService.addProduct(addProductRequest);
+        assertThat(addProductResponse.getMessage()).isNotNull();
+
+        Product myProduct = productService.findProductByName("cup");
+        assertEquals("cup", myProduct.getProductName());
+        //assertEquals(1, myProduct.getProductQuantity());
+       // assertEquals(UTENSILS, myProduct.getProductType());
+       // assertEquals(BigDecimal.valueOf(1000), myProduct.getPrice());
+        //assertEquals("kitchen tools", myProduct.getDescription());
+    }
+
+    @Test
+    public void testToRemoveProduct(){
+        CreateProductRequest createProductRequest = new CreateProductRequest();
+        createProductRequest.setProductName("cup");
+        createProductRequest.setProductType(UTENSILS);
+        createProductRequest.setPrice(BigDecimal.valueOf(1000));
+        createProductRequest.setDescription("kitchen tools");
+        CreateProductResponse createProductResponse = productService.create(createProductRequest);
+
+        assertEquals(1,productService.count());
+
+        CreateProductRequest createProductRequest1 = new CreateProductRequest();
+        createProductRequest1.setProductName("spoon");
+        createProductRequest1.setProductType(UTENSILS);
+        createProductRequest1.setPrice(BigDecimal.valueOf(500));
+        createProductRequest1.setDescription("kitchen tools");
+        CreateProductResponse createProductResponse1 = productService.create(createProductRequest1);
+
+        assertEquals(2,productService.count());
+        RemoveProductResponse removeProductRequest = userService.removeProduct("cup");
+        assertThat(removeProductRequest.getMessage());
+        assertEquals(1,productService.count());
 
     }
+
+    @Test
+    public void testToViewProduct(){
+
+    }
+
+
+
+
+
+
+
+
+
+
 
 
 }

@@ -19,7 +19,7 @@ public interface UserService {
 
     Product addItem(AddProductRequest addProductRequest);
     AddProductResponse addProduct(AddProductRequest addProductRequest);
-    RemoveProductResponse removeProduct(RemoveProductRequest removeProductRequest);
+    RemoveProductResponse removeProduct(String productName);
 
     List <ShoppingCart> viewCart(ViewCartRequest viewCartRequest);
 

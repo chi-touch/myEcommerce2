@@ -2,10 +2,13 @@ package africa.semicolon.myEcommerce2.services;
 
 import africa.semicolon.myEcommerce2.data.model.Product;
 import africa.semicolon.myEcommerce2.data.repositories.ProductRepository;
+import africa.semicolon.myEcommerce2.dto.request.AddProductRequest;
 import africa.semicolon.myEcommerce2.dto.request.CreateProductRequest;
 import africa.semicolon.myEcommerce2.dto.request.SearchProductRequest;
+import africa.semicolon.myEcommerce2.dto.response.AddProductResponse;
 import africa.semicolon.myEcommerce2.dto.response.CreateProductResponse;
 import africa.semicolon.myEcommerce2.dto.response.ViewAllProductResponse;
+import africa.semicolon.myEcommerce2.exceptions.InvalidInputEnteredException;
 import africa.semicolon.myEcommerce2.exceptions.ProductAlreadyExistException;
 import africa.semicolon.myEcommerce2.utils.Mapper;
 import lombok.AllArgsConstructor;
@@ -97,8 +100,19 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<Product> searchProducts(SearchProductRequest searchRequest) {
-        return null;
+    public AddProductResponse add(AddProductRequest addProductRequest) {
+        if (addProductRequest.getUsername() == null){
+            throw new InvalidInputEnteredException("Invalid username or password");
+        }
+
+        Product product = new Product();
+        product.setProductName(addProductRequest.getProductName());
+        product.setProductQuantity(addProductRequest.getProductQuantity());
+        productRepository.save(product);
+
+        AddProductResponse addProductResponse = new AddProductResponse();
+        addProductResponse.setMessage("Product was added successfully");
+        return addProductResponse;
     }
 //        Product foundUser =findProductByName(searchRequest.getProductName());
 //        String productName = searchRequest.getProductName();
