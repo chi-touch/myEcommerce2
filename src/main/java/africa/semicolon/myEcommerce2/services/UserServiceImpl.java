@@ -1,10 +1,7 @@
 package africa.semicolon.myEcommerce2.services;
 import africa.semicolon.myEcommerce2.data.model.*;
 import africa.semicolon.myEcommerce2.data.model.Payment;
-import africa.semicolon.myEcommerce2.data.repositories.OrderRepository;
-import africa.semicolon.myEcommerce2.data.repositories.PaymentRepository;
-import africa.semicolon.myEcommerce2.data.repositories.ProductRepository;
-import africa.semicolon.myEcommerce2.data.repositories.UserRepository;
+import africa.semicolon.myEcommerce2.data.repositories.*;
 import africa.semicolon.myEcommerce2.dto.request.*;
 import africa.semicolon.myEcommerce2.dto.response.*;
 import africa.semicolon.myEcommerce2.exceptions.*;
@@ -18,7 +15,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static africa.semicolon.myEcommerce2.data.model.TransactionStatus.SUCCESS;
-import static africa.semicolon.myEcommerce2.utils.Mapper.mapLogoutResponseWith;
 
 
 @Service
@@ -26,7 +22,7 @@ import static africa.semicolon.myEcommerce2.utils.Mapper.mapLogoutResponseWith;
 public class UserServiceImpl implements UserService{
 
    @Autowired
-    private UserRepository userRepository;
+    private EcommerceUserRepository userRepository;
 
    private final OrderService orderService;
 
@@ -39,7 +35,16 @@ public class UserServiceImpl implements UserService{
    @Autowired
    private ProductRepository productRepository;
 
-   private final ProductService productService;
+   private CreditCardInformationRepository creditCardInformationRepository;
+
+   @Autowired
+   private CustomerInformationRepository customerInformationRepository;
+
+   @Autowired
+   private ShoppingCartRepository shoppingCartRepository;
+
+   @Autowired
+   private ProductService productService;
     @Override
     public RegisterResponse register(RegisterRequest registerRequest) {
         if (userAlreadyExist(registerRequest.getUsername())){
@@ -65,7 +70,7 @@ public class UserServiceImpl implements UserService{
         String username = loginRequest.getUsername();
         String password = loginRequest.getPassword();
         EcommerceUser foundUser = userRepository.findByUsername(loginRequest.getUsername());
-        foundUser.setLocked(false);
+        foundUser.setLocked(true);
         userRepository.save(foundUser);
         if (isValidUsernameAndPassword(username, password)) {
             LoginResponse response = new LoginResponse();
@@ -83,16 +88,31 @@ public class UserServiceImpl implements UserService{
         }
         EcommerceUser foundUser = findByUsername(logOutRequest.getUsername());
 
-        foundUser.setLocked(true);
+        foundUser.setLocked(false);
         LogOutResponse logOutResponse = new LogOutResponse();
         logOutResponse.setMessage("Logout successful");
         return logOutResponse;
     }
 
     @Override
-    public AddItemResponse addItem(AddProductRequest addProductRequest) {
+    public Product addItem(AddProductRequest addProductRequest) {
         return null;
     }
+
+//    @Override
+//    public AddProductResponse addProduct(AddProductRequest addProductRequest) {
+//        if (addProductRequest.getUsername() == null){
+//            throw new InvalidInputEnteredException("Invalid username or password");
+//        }
+//        Product product = productRepository.addMyProduct(addProductRequest);
+//        productRepository.save(product);
+//
+//        AddProductResponse productResponse = new AddProductResponse();
+//        productResponse.setMessage("This product was added successfully");
+//        return productResponse;
+//
+//    }
+
 
     private boolean isValidUsernameAndPassword(String username, String password) {
         List<EcommerceUser> userList = userRepository.findAll();
@@ -241,17 +261,25 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public AddProductResponse addProduct(AddProductRequest addProductRequest){
-        Order order = new Order();
-        order.setProductName(addProductRequest.getProductName());
-        order.setProductQuantity(addProductRequest.getProductQuantity());
-        orderRepository.save(order);
+        if (addProductRequest.getUsername() == null){
+            throw new InvalidInputEnteredException("Invalid username or password");
+        }
+
+        Product product = new Product();
+        product.setProductName(addProductRequest.getProductName());
+        product.setProductQuantity(addProductRequest.getProductQuantity());
+        productRepository.save(product);
+
+//        Order order = new Order();
+//        order.setProductName(addProductRequest.getProductName());
+//        order.setProductQuantity(addProductRequest.getProductQuantity());
+//        orderRepository.save(order);
 
         AddProductResponse addProductResponse = new AddProductResponse();
         addProductResponse.setMessage("Product was added successfully");
         return addProductResponse;
 
     }
-
 
     @Override
     public RemoveProductResponse removeProduct(RemoveProductRequest removeProductRequest) {
@@ -265,34 +293,56 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public ViewCartResponse viewCart(ViewCartRequest viewCartRequest) {
-
-        return null;
+    public List<ShoppingCart> viewCart(ViewCartRequest viewCartRequest) {
+         List <ShoppingCart> shoppingCart = shoppingCartRepository.findAll();
+        return shoppingCart;
     }
 
     @Override
     public UpdateDeliveryDetailsResponse updateDelivery(UpdateDeliveryDetailsRequest updateDeliveryRequest) {
-        return null;
+        EcommerceUser ecommerceUser = findByUsername(updateDeliveryRequest.getUsername());
+        validateLoginStatusOf(ecommerceUser);
+
+        CustomerInformation customerInformation = Mapper.customerMap(updateDeliveryRequest);
+        customerInformationRepository.save(customerInformation);
+        UpdateDeliveryDetailsResponse updateDeliveryDetailsResponse = new UpdateDeliveryDetailsResponse();
+        updateDeliveryDetailsResponse.setMessage("Delivery details updated successfully");
+        return updateDeliveryDetailsResponse;
     }
 
     @Override
-    public UpdateCreditCardInformationResponse updateCard(UpdateCreditCardInformationResponse updateCreditCardInformationResponse) {
-        return null;
+    public UpdateCreditCardInformationResponse updateCard(UpdateCreditCardInformationRequest updateCreditCardInformationRequest) {
+
+        EcommerceUser ecommerceUser = findByUsername(updateCreditCardInformationRequest.getUsername());
+        validateLoginStatusOf(ecommerceUser);
+
+        CreditCardInformation creditCardInformation = Mapper.creditCardMap(updateCreditCardInformationRequest);
+        creditCardInformationRepository.save(creditCardInformation);
+
+        UpdateCreditCardInformationResponse updateCreditCardInformationResponse = new UpdateCreditCardInformationResponse();
+        updateCreditCardInformationResponse.setMessage("Card details updated successfully");
+        return updateCreditCardInformationResponse;
+
     }
+
+    private void validateLoginStatusOf(EcommerceUser ecommerceUser) {
+        if (!ecommerceUser.isLocked()) throw new InvalidInputEnteredException("invalid username or password");
+    }
+
 
     @Override
     public CheckOutResponse checkOut(CheckOutRequest checkOutRequest) {
+        EcommerceUser foundUser = findByUsername(checkOutRequest.getUsername());
+        validateLoginStatusOf(foundUser);
+        //Order newOrder = che
         return null;
     }
 
-    @Override
-    public ViewOrderResponse viewOrder(ViewOrderResponse viewOrderResponse) {
-        return null;
-    }
 
     @Override
-    public ViewAllOrderResponse viewAll(ViewAllUserOrdersRequest viewAllUserOrdersRequest) {
-        return null;
+    public List<Order> viewAll(ViewAllUserOrdersRequest viewAllUserOrdersRequest) {
+        List<Order> myOrders = orderRepository.findAll();
+        return myOrders;
     }
 
 
@@ -324,13 +374,13 @@ public class UserServiceImpl implements UserService{
     }
 
 
-    public List<ViewAllProductResponse> viewAllContact(SearchProductRequest searchProductRequest) {
+    public List<ViewAllProductResponse> viewAllProduct(SearchProductRequest searchProductRequest) {
 
         Product myProduct = findProductByName(searchProductRequest.getProductName());
         List<Product> viewAllProducts =  productService.viewProducts(myProduct);
         List<ViewAllProductResponse> productResponseList = new ArrayList<>();
         for (Product product : viewAllProducts){
-            ViewAllProductResponse viewAllProductResponse = productResponseList.get(0);
+            ViewAllProductResponse viewAllProductResponse = productResponseList.getFirst();
             productResponseList.add(viewAllProductResponse);
 
         }

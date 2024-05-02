@@ -1,7 +1,9 @@
 package africa.semicolon.myEcommerce2.services;
 
+import africa.semicolon.myEcommerce2.data.model.Order;
 import africa.semicolon.myEcommerce2.data.model.Product;
 import africa.semicolon.myEcommerce2.data.model.EcommerceUser;
+import africa.semicolon.myEcommerce2.data.model.ShoppingCart;
 import africa.semicolon.myEcommerce2.dto.request.*;
 import africa.semicolon.myEcommerce2.dto.response.*;
 
@@ -15,24 +17,19 @@ public interface UserService {
 
     LogOutResponse logOut(LogOutRequest logOutRequest);
 
-    AddItemResponse addItem(AddProductRequest addProductRequest);
+    Product addItem(AddProductRequest addProductRequest);
     AddProductResponse addProduct(AddProductRequest addProductRequest);
-
-    RemoveItemResponse removeItem(RemoveItemResponse removeItemResponse);
-
     RemoveProductResponse removeProduct(RemoveProductRequest removeProductRequest);
 
-    ViewCartResponse viewCart(ViewCartRequest viewCartRequest);
+    List <ShoppingCart> viewCart(ViewCartRequest viewCartRequest);
 
     UpdateDeliveryDetailsResponse updateDelivery(UpdateDeliveryDetailsRequest updateDeliveryRequest);
 
-    UpdateCreditCardInformationResponse updateCard(UpdateCreditCardInformationResponse updateCreditCardInformationResponse);
+    UpdateCreditCardInformationResponse updateCard(UpdateCreditCardInformationRequest updateCreditCardInformationRequest);
 
     CheckOutResponse checkOut(CheckOutRequest checkOutRequest);
 
-    ViewOrderResponse viewOrder(ViewOrderResponse viewOrderResponse);
-
-    ViewAllOrderResponse viewAll(ViewAllUserOrdersRequest viewAllUserOrdersRequest);
+    List<Order> viewAll(ViewAllUserOrdersRequest viewAllUserOrdersRequest);
 
     EcommerceUser findByUsername(String username);
 
