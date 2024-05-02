@@ -6,7 +6,7 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface UserRepository extends MongoRepository<EcommerceUser, String> {
+public interface EcommerceUserRepository extends MongoRepository<EcommerceUser, String> {
    EcommerceUser findByUsername(String username);
 
 
