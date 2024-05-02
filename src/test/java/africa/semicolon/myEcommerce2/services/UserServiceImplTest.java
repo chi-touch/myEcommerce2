@@ -5,7 +5,7 @@ import africa.semicolon.myEcommerce2.data.model.*;
 import africa.semicolon.myEcommerce2.data.model.Payment;
 import africa.semicolon.myEcommerce2.data.repositories.OrderRepository;
 import africa.semicolon.myEcommerce2.data.repositories.ProductRepository;
-import africa.semicolon.myEcommerce2.data.repositories.UserRepository;
+import africa.semicolon.myEcommerce2.data.repositories.EcommerceUserRepository;
 import africa.semicolon.myEcommerce2.dto.request.*;
 import africa.semicolon.myEcommerce2.dto.response.*;
 import org.junit.jupiter.api.BeforeEach;
@@ -45,7 +45,7 @@ public class UserServiceImplTest {
     OrderRepository orderRepository;
 
     @Autowired
-    UserRepository userRepository;
+    EcommerceUserRepository userRepository;
 
     @Autowired
     ProductRepository productRepository;
