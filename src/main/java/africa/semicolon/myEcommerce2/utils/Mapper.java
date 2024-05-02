@@ -58,26 +58,37 @@ public class Mapper {
         CheckOutResponse checkoutResponse = new CheckOutResponse();
         checkoutResponse.setUsername(order.getBuyer().getUsername());
         checkoutResponse.setOrderId(order.getId());
-
         return checkoutResponse;
     }
+
 
     public static Payment paymentDeliveryMapper(PaymentAtDeliveryRequest paymentAtDeliveryRequest){
         Payment payment = new Payment();
         payment.setAmount(paymentAtDeliveryRequest.getAmount());
         payment.setDeliveryId(paymentAtDeliveryRequest.getDeliveryId());
-        payment.setStatus(PENDING);
+        payment.setStatus(paymentAtDeliveryRequest.getStatus());
         return payment;
     }
 
-    public static LogOutResponse mapLogoutResponseWith(LogOutRequest logOutRequest) {
+    public static CustomerInformation customerMap(UpdateDeliveryDetailsRequest updateDeliveryDetailsRequest) {
+        CustomerInformation customerInformation = new CustomerInformation();
+        customerInformation.setReceiverName(updateDeliveryDetailsRequest.getReceiverName());
+        customerInformation.setReceiverPhoneNumber(updateDeliveryDetailsRequest.getReceiverPhoneNumber());
+        Address deliveryAddress = customerInformation.getDeliveryAddress();
+        deliveryAddress.setStreet(updateDeliveryDetailsRequest.getStreet());
+        deliveryAddress.setState(updateDeliveryDetailsRequest.getState());
+        deliveryAddress.setHouseNumber(updateDeliveryDetailsRequest.getHouseNumber());
 
-        LogOutResponse logoutResponse = new LogOutResponse();
-        logoutResponse.setId(user.getId());
-        logoutResponse.setUsername(user.getUsername());
-        logoutResponse.setLoggedIn(false);
-        return logoutResponse;
+        return customerInformation;
     }
 
-
+    public static CreditCardInformation creditCardMap(UpdateCreditCardInformationRequest updateCreditCardInformationRequest) {
+        CreditCardInformation creditCardInformation = new CreditCardInformation();
+        creditCardInformation.setCreditCardNumber(updateCreditCardInformationRequest.getCreditCardNumber());
+        creditCardInformation.setCvv(updateCreditCardInformationRequest.getCvv());
+        creditCardInformation.setCardHolderName(updateCreditCardInformationRequest.getCardHolderName());
+        creditCardInformation.setCardExpirationMonth(updateCreditCardInformationRequest.getCardExpirationMonth());
+        creditCardInformation.setCardExpirationYear(updateCreditCardInformationRequest.getCardExpirationYear());
+        return creditCardInformation;
+    }
 }

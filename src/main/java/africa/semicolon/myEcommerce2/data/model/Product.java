@@ -33,4 +33,5 @@ public class Product {
     }
 
 
+    private int productQuantity;
 }
