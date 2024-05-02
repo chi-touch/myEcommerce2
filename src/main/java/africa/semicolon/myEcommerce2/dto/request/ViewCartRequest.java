@@ -5,6 +5,10 @@ import lombok.Data;
 
 @Data
 public class ViewCartRequest {
-   // @NotNull(message = "Username cannot be null")
+
     private String username;
+    private String productName;
+    private String productQuantity;
+    private String productId;
+
 }
