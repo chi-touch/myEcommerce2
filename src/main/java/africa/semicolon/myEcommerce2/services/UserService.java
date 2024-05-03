@@ -17,17 +17,17 @@ public interface UserService {
 
     LogOutResponse logOut(LogOutRequest logOutRequest);
 
-    Product addItem(AddProductRequest addProductRequest);
+    ShoppingCart addItemToCart(AddProductRequest addProductRequest);
     AddProductResponse addProduct(AddProductRequest addProductRequest);
     RemoveProductResponse removeProduct(String productName);
 
-    List <ShoppingCart> viewCart(ViewCartRequest viewCartRequest);
+    ShoppingCart viewCart(ViewCartRequest viewCartRequest);
 
     UpdateDeliveryDetailsResponse updateDelivery(UpdateDeliveryDetailsRequest updateDeliveryRequest);
 
     UpdateCreditCardInformationResponse updateCard(UpdateCreditCardInformationRequest updateCreditCardInformationRequest);
 
-    CheckOutResponse checkOut(CheckOutRequest checkOutRequest);
+  EcommerceUser checkOut(CheckOutRequest checkOutRequest);
 
     List<Order> viewAll(ViewAllUserOrdersRequest viewAllUserOrdersRequest);
 

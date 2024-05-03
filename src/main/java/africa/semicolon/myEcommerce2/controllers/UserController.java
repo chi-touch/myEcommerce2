@@ -15,6 +15,7 @@ import africa.semicolon.myEcommerce2.exceptions.UserAlreadyExistException;
 import africa.semicolon.myEcommerce2.exceptions.UserNameNotFoundException;
 import africa.semicolon.myEcommerce2.services.ProductService;
 import africa.semicolon.myEcommerce2.services.UserService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,15 +26,13 @@ import static org.springframework.http.HttpStatus.*;
 
 @RestController
 @RequestMapping("/api")
+@RequiredArgsConstructor
 public class UserController {
+        private final UserService userService;
 
-         @Autowired
-        UserService userService;
+        private final ProductService productService;
 
-        @Autowired
-        ProductService productService;
-
-        @PostMapping("/register")
+    @PostMapping("/register")
         public ResponseEntity<?> register(@RequestBody RegisterRequest registerRequest) {
             try {
                 var answer = userService.register(registerRequest);

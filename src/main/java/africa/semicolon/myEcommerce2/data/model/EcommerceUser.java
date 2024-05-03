@@ -42,6 +42,7 @@ public class EcommerceUser {
         return date.format(dateTimeFormatter);
     }
 
+    private ShoppingCart cart;
 
     private boolean logOut;
 

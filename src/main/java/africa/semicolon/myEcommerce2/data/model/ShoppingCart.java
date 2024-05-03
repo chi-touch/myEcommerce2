@@ -7,8 +7,11 @@ import java.util.List;
 
 @Data
 public class ShoppingCart {
-    private String productId;
-    private String productName;
-    private String productQuality;
+
     private List<Item> items = new ArrayList<>();
+
+
+    public void addProductToCart(Item item) {
+        items.add(item);
+    }
 }

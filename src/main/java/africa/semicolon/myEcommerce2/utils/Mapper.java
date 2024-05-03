@@ -5,6 +5,7 @@ import africa.semicolon.myEcommerce2.data.model.*;
 import africa.semicolon.myEcommerce2.dto.request.*;
 import africa.semicolon.myEcommerce2.dto.response.CheckOutResponse;
 import africa.semicolon.myEcommerce2.dto.response.LogOutResponse;
+import africa.semicolon.myEcommerce2.dto.response.ViewCartResponse;
 
 import static africa.semicolon.myEcommerce2.data.model.TransactionStatus.PENDING;
 
@@ -90,5 +91,12 @@ public class Mapper {
         creditCardInformation.setCardExpirationMonth(updateCreditCardInformationRequest.getCardExpirationMonth());
         creditCardInformation.setCardExpirationYear(updateCreditCardInformationRequest.getCardExpirationYear());
         return creditCardInformation;
+    }
+
+    public static EcommerceUser mapViewCart(ViewCartRequest viewCartRequest) {
+        EcommerceUser ecommerceUser = new EcommerceUser();
+        ecommerceUser.setUsername(viewCartRequest.getUsername());
+        ecommerceUser.setCart(viewCartRequest.getCart());
+        return ecommerceUser;
     }
 }

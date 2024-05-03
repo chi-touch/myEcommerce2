@@ -24,7 +24,8 @@ public class UserServiceImpl implements UserService{
    @Autowired
     private EcommerceUserRepository userRepository;
 
-   private final OrderService orderService;
+   @Autowired
+   private OrderService orderService;
 
    @Autowired
    private OrderRepository orderRepository;
@@ -35,6 +36,7 @@ public class UserServiceImpl implements UserService{
    @Autowired
    private ProductRepository productRepository;
 
+   @Autowired
    private CreditCardInformationRepository creditCardInformationRepository;
 
    @Autowired
@@ -95,23 +97,31 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public Product addItem(AddProductRequest addProductRequest) {
-        return null;
+    public ShoppingCart addItemToCart(AddProductRequest addProductRequest) {
+        if (addProductRequest.getUsername() == null){
+            throw new InvalidInputEnteredException("This username is not valid");
+        }
+      Product foundProduct = productService.findProductByName(addProductRequest.getProductName());
+      EcommerceUser foundUser = userRepository.findByUsername(addProductRequest.getUsername());
+      ShoppingCart foundCart = foundUser.getCart();
+      addProduct(foundProduct,foundUser,foundCart);
+      ShoppingCart newShoppingCartty = shoppingCartRepository.save(foundCart);
+
+        return newShoppingCartty;
     }
 
-//    @Override
-//    public AddProductResponse addProduct(AddProductRequest addProductRequest) {
-//        if (addProductRequest.getUsername() == null){
-//            throw new InvalidInputEnteredException("Invalid username or password");
-//        }
-//        Product product = productRepository.addMyProduct(addProductRequest);
-//        productRepository.save(product);
-//
-//        AddProductResponse productResponse = new AddProductResponse();
-//        productResponse.setMessage("This product was added successfully");
-//        return productResponse;
-//
-//    }
+    public void addProduct(Product foundProduct,EcommerceUser foundUser,ShoppingCart foundCart) {
+
+        Item item = new Item();
+        item.setProductId(foundProduct.getId());
+        item.setProductName(foundProduct.getProductName());
+        item.setQuantityOfProduct(1);
+        item.setPrice(foundProduct.getPrice());
+        item.setUserRole(foundProduct.getUserRole());
+        foundCart.addProductToCart(item);
+
+
+    }
 
 
     private boolean isValidUsernameAndPassword(String username, String password) {
@@ -236,7 +246,8 @@ public class UserServiceImpl implements UserService{
     @Override
     public EcommerceUser findByUsername(String username) {
         EcommerceUser myUser = userRepository.findByUsername(username);
-        if (myUser != null) {
+        if (myUser.getUsername() != null){
+       // if (myUser != null) {
             return  myUser;
         }
         throw new UserNameNotFoundException("User not found");
@@ -261,19 +272,25 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public AddProductResponse addProduct(AddProductRequest addProductRequest){
-//        if (addProductRequest.getUsername() == null){
-//            throw new InvalidInputEnteredException("Invalid username or password");
-//        }
 
-        Product product = new Product();
+//        if (addProductRequest == null){
+//            throw new InvalidInputEnteredException("Product can not be added");
+//        }
+//
+//        String productName = addProductRequest.getProductName();
+//        if (productName == null){
+//            throw new InvalidInputEnteredException("ProductName can not be null");
+//        }
+//
+//        Product foundProduct = productService.findProductByName(addProductRequest.getProductName());
+//        if (foundProduct == null){
+//            throw new InvalidInputEnteredException("This product does not exist");
+//        }
+       Product product = new Product();
+
         product.setProductName(addProductRequest.getProductName());
         product.setProductQuantity(addProductRequest.getProductQuantity());
         productRepository.save(product);
-
-//        Order order = new Order();
-//        order.setProductName(addProductRequest.getProductName());
-//        order.setProductQuantity(addProductRequest.getProductQuantity());
-//        orderRepository.save(order);
 
         AddProductResponse addProductResponse = new AddProductResponse();
         addProductResponse.setMessage("Product was added successfully");
@@ -281,6 +298,11 @@ public class UserServiceImpl implements UserService{
 
     }
 
+
+    //        Order order = new Order();
+//        order.setProductName(addProductRequest.getProductName());
+//        order.setProductQuantity(addProductRequest.getProductQuantity());
+//        orderRepository.save(order);
     @Override
     public RemoveProductResponse removeProduct(String productName) {
         if (productName == null) {
@@ -291,11 +313,27 @@ public class UserServiceImpl implements UserService{
         removeResponse.setMessage("Product was successfully removed");
         return removeResponse;
     }
+//
+//    @Override
+//    public List<ShoppingCart> viewCart(ViewCartRequest viewCartRequest) {
+//         List <ShoppingCart> shoppingCart = shoppingCartRepository.findAll();
+//        return shoppingCart;
+//    }
 
-    @Override
-    public List<ShoppingCart> viewCart(ViewCartRequest viewCartRequest) {
-         List <ShoppingCart> shoppingCart = shoppingCartRepository.findAll();
+    public ShoppingCart viewCart(ViewCartRequest viewCartRequest) {
+
+//        if (viewCartRequest.getCart() == null ) {
+//            throw new ShoppingCartIsEmptyException("Your cart is empty");
+//        }
+        EcommerceUser foundUser = findByUsername(viewCartRequest.getUsername());
+        validateLoginStatusOf(foundUser);
+
+        ShoppingCart shoppingCart = Mapper.mapViewCart(viewCartRequest).getCart();
         return shoppingCart;
+    }
+
+    private void validateLoginStatusOf(EcommerceUser ecommerceUser) {
+        if (ecommerceUser.isLocked()) throw new InvalidInputEnteredException("invalid username or password");
     }
 
     @Override
@@ -325,17 +363,15 @@ public class UserServiceImpl implements UserService{
 
     }
 
-    private void validateLoginStatusOf(EcommerceUser ecommerceUser) {
-        if (!ecommerceUser.isLocked()) throw new InvalidInputEnteredException("invalid username or password");
-    }
+
 
 
     @Override
-    public CheckOutResponse checkOut(CheckOutRequest checkOutRequest) {
+    public EcommerceUser checkOut(CheckOutRequest checkOutRequest) {
         EcommerceUser foundUser = findByUsername(checkOutRequest.getUsername());
         validateLoginStatusOf(foundUser);
         //Order newOrder = che
-        return null;
+        return foundUser;
     }
 
 

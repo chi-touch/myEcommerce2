@@ -17,9 +17,11 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import static africa.semicolon.myEcommerce2.data.model.ProductType.ELECTRONICS;
 import static africa.semicolon.myEcommerce2.data.model.ProductType.UTENSILS;
 import static africa.semicolon.myEcommerce2.data.model.Role.ADMIN;
 
+import static africa.semicolon.myEcommerce2.data.model.Role.CUSTOMER;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -30,6 +32,7 @@ public class UserServiceImplTest {
     @Autowired
     UserService userService;
 
+    ViewCartRequest viewCartRequest;
 
     @Autowired
     PaymentService paymentService;
@@ -49,6 +52,8 @@ public class UserServiceImplTest {
 
     @Autowired
     ProductRepository productRepository;
+
+    AddProductRequest addProductRequest;
 
     Payment payment;
 
@@ -359,7 +364,49 @@ public class UserServiceImplTest {
     }
 
     @Test
-    public void testToViewProduct(){
+    public void testToViewCart(){
+
+        RegisterRequest registerRequest1 = new RegisterRequest();
+        registerRequest1.setRole(ADMIN);
+        registerRequest1.setFirstName("chichi2");
+        registerRequest1.setLastName("dave2");
+        registerRequest1.setPassword("1235");
+        registerRequest1.setUsername("div2");
+        userService.register(registerRequest1);
+
+        AddProductRequest addProductRequest1 = new AddProductRequest();
+        addProductRequest1.setProductName("fan");
+        addProductRequest1.setProductQuantity(1);
+        addProductRequest1.setProductType(ELECTRONICS);
+        addProductRequest1.setDescription("home");
+        addProductRequest1.setUsername("div2");
+        addProductRequest1.setPrice(BigDecimal.valueOf(2000));
+
+        AddProductResponse addProductResponse = userService.addProduct(addProductRequest1);
+
+        Item item = new Item();
+        item.setPrice(BigDecimal.valueOf(2000));
+        item.setProductName("shoe");
+
+        item.setUserRole(CUSTOMER);
+        item.setQuantityOfProduct(1);
+
+
+        ShoppingCart cart = new ShoppingCart();
+        cart.addProductToCart(item);
+
+
+        ViewCartRequest viewCartRequest = new ViewCartRequest();
+        viewCartRequest.setUsername("div2");
+        viewCartRequest.setCart(cart);
+        viewCartRequest.setProductName("shoe");
+        viewCartRequest.setProductQuantity(1);
+        viewCartRequest.setPrice(BigDecimal.valueOf(2000));
+        userService.viewCart(viewCartRequest);
+        //List <Item> items = cart.getItems();
+
+      //  assertEquals(items.getFirst().getPrice(),registerRequest1.getUsername());
+        assertTrue(!cart.getItems().isEmpty());
 
     }
 
