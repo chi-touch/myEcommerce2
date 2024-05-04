@@ -3,6 +3,7 @@ package africa.semicolon.myEcommerce2.data.model;
 import lombok.Data;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.sql.RowSet;
@@ -47,5 +48,8 @@ public class Order {
 
 
     private EcommerceUser buyer;
+
+    @DBRef
+    private CustomerInformation customerInformation;
 
 }

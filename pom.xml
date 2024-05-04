@@ -54,4 +54,25 @@
 <!--		</dependency>-->
 	</dependencies>
 
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.8.1</version> <!-- Or the latest version -->
+				<configuration>
+					<source>1.8</source> <!-- Or your Java version -->
+					<target>1.8</target> <!-- Or your Java version -->
+					<compilerArgs>
+						<arg>-parameters</arg>
+					</compilerArgs>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
 </project>
+
+
+

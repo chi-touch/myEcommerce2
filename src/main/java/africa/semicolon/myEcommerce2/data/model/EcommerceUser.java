@@ -4,6 +4,7 @@ package africa.semicolon.myEcommerce2.data.model;
 
 import lombok.Data;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -21,16 +22,22 @@ public class EcommerceUser {
     private String lastName;
     private String email;
     private String password;
-    private List<Product> productList = new ArrayList<>();
-    private Role role;
+   // private String receiverName;
+    private String receiverPhoneNumber;
+    private CreditCardInformation creditCardInfo;
+    //private List<Product> productList = new ArrayList<>();
+    private Role role = Role.VENDOR;
+    @Indexed(unique = true)
     private String username;
-    private boolean isLocked;
-    private CustomerInformation customerInformation;
+    private boolean isLocked = false;
 
-    @DBRef
-    private Payment payment;
 
-    @DBRef
+
+
+    //@DBRef
+    //private Payment payment;
+
+//    @DBRef
     private Address address;
 
     private String createTime = createdAt();
@@ -44,6 +51,6 @@ public class EcommerceUser {
 
     private ShoppingCart cart;
 
-    private boolean logOut;
+    //private boolean logOut;
 
 }

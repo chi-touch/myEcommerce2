@@ -20,7 +20,7 @@ public class Product {
     private ProductType productType;
     private BigDecimal price;
     private String description;
-    private Role userRole;
+    private String userId;
 
     private List<Order> orders = new ArrayList<>();
 

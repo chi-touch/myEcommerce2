@@ -8,6 +8,7 @@ import africa.semicolon.myEcommerce2.data.repositories.ProductRepository;
 import africa.semicolon.myEcommerce2.data.repositories.EcommerceUserRepository;
 import africa.semicolon.myEcommerce2.dto.request.*;
 import africa.semicolon.myEcommerce2.dto.response.*;
+import lombok.var;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

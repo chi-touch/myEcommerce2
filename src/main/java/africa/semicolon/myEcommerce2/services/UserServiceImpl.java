@@ -54,6 +54,7 @@ public class UserServiceImpl implements UserService{
         }
        EcommerceUser user = Mapper.mapper(registerRequest);
         userRepository.save(user);
+
         RegisterResponse registerResponse = new RegisterResponse();
         registerResponse.setMessage("Registration is successful");
         return registerResponse;
@@ -76,6 +77,8 @@ public class UserServiceImpl implements UserService{
         userRepository.save(foundUser);
         if (isValidUsernameAndPassword(username, password)) {
             LoginResponse response = new LoginResponse();
+            response.setUsername(loginRequest.getUsername());
+            response.setLoggedIn(true);
             response.setMessage("Login successful");
             return response;
         } else {
@@ -90,7 +93,7 @@ public class UserServiceImpl implements UserService{
         }
         EcommerceUser foundUser = findByUsername(logOutRequest.getUsername());
 
-        foundUser.setLocked(false);
+        foundUser.setLocked(true);
         LogOutResponse logOutResponse = new LogOutResponse();
         logOutResponse.setMessage("Logout successful");
         return logOutResponse;
@@ -117,7 +120,7 @@ public class UserServiceImpl implements UserService{
         item.setProductName(foundProduct.getProductName());
         item.setQuantityOfProduct(1);
         item.setPrice(foundProduct.getPrice());
-        item.setUserRole(foundProduct.getUserRole());
+//        item.setUserRole(foundProduct.getUserRole());
         foundCart.addProductToCart(item);
 
 
@@ -247,8 +250,7 @@ public class UserServiceImpl implements UserService{
     public EcommerceUser findByUsername(String username) {
         EcommerceUser myUser = userRepository.findByUsername(username);
         if (myUser.getUsername() != null){
-       // if (myUser != null) {
-            return  myUser;
+             return  myUser;
         }
         throw new UserNameNotFoundException("User not found");
     }
@@ -416,7 +418,7 @@ public class UserServiceImpl implements UserService{
         List<Product> viewAllProducts =  productService.viewProducts(myProduct);
         List<ViewAllProductResponse> productResponseList = new ArrayList<>();
         for (Product product : viewAllProducts){
-            ViewAllProductResponse viewAllProductResponse = productResponseList.getFirst();
+            ViewAllProductResponse viewAllProductResponse = productResponseList.get(0);
             productResponseList.add(viewAllProductResponse);
 
         }

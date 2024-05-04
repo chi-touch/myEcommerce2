@@ -3,20 +3,14 @@ package africa.semicolon.myEcommerce2.controllers;
 
 import africa.semicolon.myEcommerce2.data.model.Product;
 import africa.semicolon.myEcommerce2.data.model.EcommerceUser;
-import africa.semicolon.myEcommerce2.dto.request.LoginRequest;
-import africa.semicolon.myEcommerce2.dto.request.OrderRequest;
-import africa.semicolon.myEcommerce2.dto.request.RegisterRequest;
-import africa.semicolon.myEcommerce2.dto.request.SearchProductRequest;
+import africa.semicolon.myEcommerce2.dto.request.*;
 import africa.semicolon.myEcommerce2.dto.response.ApiResponse;
-import africa.semicolon.myEcommerce2.dto.response.OrderResponse;
 import africa.semicolon.myEcommerce2.exceptions.InvalidInputEnteredException;
 import africa.semicolon.myEcommerce2.exceptions.ProductDoesExistException;
 import africa.semicolon.myEcommerce2.exceptions.UserAlreadyExistException;
-import africa.semicolon.myEcommerce2.exceptions.UserNameNotFoundException;
 import africa.semicolon.myEcommerce2.services.ProductService;
 import africa.semicolon.myEcommerce2.services.UserService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.var;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,11 +20,15 @@ import static org.springframework.http.HttpStatus.*;
 
 @RestController
 @RequestMapping("/api")
-@RequiredArgsConstructor
 public class UserController {
         private final UserService userService;
 
         private final ProductService productService;
+
+    public UserController(UserService userService, ProductService productService) {
+        this.userService = userService;
+        this.productService = productService;
+    }
 
     @PostMapping("/register")
         public ResponseEntity<?> register(@RequestBody RegisterRequest registerRequest) {
@@ -57,6 +55,56 @@ public class UserController {
                 return new ResponseEntity<>(new ApiResponse(false, e.getMessage()), BAD_REQUEST);
             }
         }
+        @PostMapping("/logout")
+        public ResponseEntity<?> logOut(@RequestBody LogOutRequest logOutRequest) {
+            try {
+                var log = userService.logOut(logOutRequest);
+                return new ResponseEntity<>(new ApiResponse(true, log), CREATED);
+            }catch (InvalidInputEnteredException e){
+                return new ResponseEntity<>(new ApiResponse(false, e.getMessage()), BAD_REQUEST);
+            }
+        }
+
+        @PostMapping("/cart")
+        public ResponseEntity<?> addItemToCart(@RequestBody AddProductRequest addProductRequest) {
+            try {
+                var answer = userService.addItemToCart(addProductRequest);
+                return new ResponseEntity<>(new ApiResponse(true, answer), CREATED);
+            }catch (InvalidInputEnteredException e){
+                return new ResponseEntity<>(new ApiResponse(false, e.getMessage()), BAD_REQUEST);
+            }
+        }
+
+        @PostMapping("/product/create")
+        public ResponseEntity<?> createProduct(@RequestBody CreateProductRequest createProductRequest) {
+            try {
+                var answer = productService.create(createProductRequest);
+                return new ResponseEntity<>(new ApiResponse(true, answer), CREATED);
+            }catch (InvalidInputEnteredException e){
+                return new ResponseEntity<>(new ApiResponse(false, e.getMessage()), BAD_REQUEST);
+            }
+        }
+
+        @DeleteMapping("/product")
+        public ResponseEntity<?> removeProduct(@RequestBody String productName) {
+            try {
+                var answer = userService.removeProduct(productName);
+                return new ResponseEntity<>(new ApiResponse(true, answer), CREATED);
+            }catch (InvalidInputEnteredException e){
+                return new ResponseEntity<>(new ApiResponse(false, e.getMessage()), BAD_REQUEST);
+            }
+        }
+
+        @GetMapping("/cart")
+        public ResponseEntity<?> viewCart(@RequestBody ViewCartRequest viewCartRequest) {
+            try {
+                var answer = userService.viewCart(viewCartRequest);
+                return new ResponseEntity<>(new ApiResponse(true, answer), CREATED);
+            }catch (InvalidInputEnteredException e){
+                return new ResponseEntity<>(new ApiResponse(false, e.getMessage()), BAD_REQUEST);
+            }
+        }
+
 
         @PostMapping("/order")
         public ResponseEntity<?> order(@RequestBody OrderRequest orderRequest) {
@@ -96,5 +144,14 @@ public class UserController {
             userService.deleteAll();
         }
 
+        @GetMapping("/findByUsername/{username}")
+        public ResponseEntity<?> findByUsername(@PathVariable String username){
+            try {
+                var result = userService.findByUsername(username);
+                return ResponseEntity.ok(new ApiResponse(true, result));
+            }catch (InvalidInputEnteredException e){
+                return new ResponseEntity<>(new ApiResponse(false,e.getMessage()), BAD_REQUEST);
+            }
+        }
 
 }

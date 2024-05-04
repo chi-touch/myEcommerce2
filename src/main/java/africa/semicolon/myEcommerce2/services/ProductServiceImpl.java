@@ -1,20 +1,21 @@
 package africa.semicolon.myEcommerce2.services;
 
+import africa.semicolon.myEcommerce2.data.model.EcommerceUser;
 import africa.semicolon.myEcommerce2.data.model.Product;
+import africa.semicolon.myEcommerce2.data.model.Role;
+import africa.semicolon.myEcommerce2.data.repositories.EcommerceUserRepository;
 import africa.semicolon.myEcommerce2.data.repositories.ProductRepository;
 import africa.semicolon.myEcommerce2.dto.request.AddProductRequest;
 import africa.semicolon.myEcommerce2.dto.request.CreateProductRequest;
-import africa.semicolon.myEcommerce2.dto.request.SearchProductRequest;
 import africa.semicolon.myEcommerce2.dto.response.AddProductResponse;
 import africa.semicolon.myEcommerce2.dto.response.CreateProductResponse;
-import africa.semicolon.myEcommerce2.dto.response.ViewAllProductResponse;
 import africa.semicolon.myEcommerce2.exceptions.InvalidInputEnteredException;
 import africa.semicolon.myEcommerce2.exceptions.ProductAlreadyExistException;
+import africa.semicolon.myEcommerce2.exceptions.UserNameNotFoundException;
 import africa.semicolon.myEcommerce2.utils.Mapper;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -23,13 +24,17 @@ public class ProductServiceImpl implements ProductService {
 
 
     private final ProductRepository productRepository;
+    private final EcommerceUserRepository userRepository;
     @Override
     public CreateProductResponse create(CreateProductRequest createProduct) {
 
         if (productAlreadyExist(createProduct.getProductName())){
             throw new ProductAlreadyExistException("this product already exist");
         }
-
+        EcommerceUser foundUser = userRepository.findById(createProduct.getUserId()).orElseThrow(()-> new UserNameNotFoundException("User not found"));
+        if(!foundUser.getRole().equals(Role.ADMIN)){
+            throw new InvalidInputEnteredException("You are not allowed to create product");
+        }
 
         Product product = Mapper.productMapper(createProduct);
         productRepository.save(product);

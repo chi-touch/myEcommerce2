@@ -1,7 +1,6 @@
 package africa.semicolon.myEcommerce2.utils;
 
 import africa.semicolon.myEcommerce2.data.model.*;
-//import africa.semicolon.myEcommerce2.dto.request.CreateProductRequest;
 import africa.semicolon.myEcommerce2.dto.request.*;
 import africa.semicolon.myEcommerce2.dto.response.CheckOutResponse;
 import africa.semicolon.myEcommerce2.dto.response.LogOutResponse;
@@ -14,18 +13,30 @@ public class Mapper {
         EcommerceUser myUser = new EcommerceUser();
         myUser.setFirstName(registerRequest.getFirstName());
         myUser.setLastName(registerRequest.getLastName());
+        myUser.setReceiverPhoneNumber(registerRequest.getReceiverPhoneNumber());
+
+        CreditCardInformation cardInformation = new CreditCardInformation();
+        cardInformation.setCardHolderName(registerRequest.getCardHolderName());
+        cardInformation.setCreditCardNumber(registerRequest.getCreditCardNumber());
+        cardInformation.setCardExpirationMonth(registerRequest.getCardExpirationMonth());
+        cardInformation.setCardExpirationYear(registerRequest.getCardExpirationYear());
+        cardInformation.setCvv(registerRequest.getCvv());
+        myUser.setCreditCardInfo(cardInformation);
+
+
         Address userAddress = Address.builder()
                 .country(registerRequest.getCountry())
                 .state(registerRequest.getState())
                 .street(registerRequest.getStreet())
                 .houseNumber(registerRequest.getHouseNumber())
-                .houseNumber(registerRequest.getHouseNumber())
                 .build();
+        myUser.setAddress(userAddress);
         myUser.setPassword(registerRequest.getPassword());
         myUser.setEmail(registerRequest.getEmail());
         myUser.setRole(registerRequest.getRole());
         myUser.setUsername(registerRequest.getUsername());
-        myUser.setLocked(false);
+        myUser.setLocked(true);
+
         return myUser;
     }
 
