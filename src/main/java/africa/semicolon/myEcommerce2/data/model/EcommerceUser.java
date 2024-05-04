@@ -26,7 +26,7 @@ public class EcommerceUser {
     private String receiverPhoneNumber;
     private CreditCardInformation creditCardInfo;
     //private List<Product> productList = new ArrayList<>();
-    private Role role = Role.VENDOR;
+    private Role role = Role.ADMIN;
     @Indexed(unique = true)
     private String username;
     private boolean isLocked = false;

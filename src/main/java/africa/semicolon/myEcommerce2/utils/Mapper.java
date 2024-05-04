@@ -107,7 +107,7 @@ public class Mapper {
     public static EcommerceUser mapViewCart(ViewCartRequest viewCartRequest) {
         EcommerceUser ecommerceUser = new EcommerceUser();
         ecommerceUser.setUsername(viewCartRequest.getUsername());
-        ecommerceUser.setCart(viewCartRequest.getCart());
+       // ecommerceUser.setCart(viewCartRequest.getCart());
         return ecommerceUser;
     }
 }

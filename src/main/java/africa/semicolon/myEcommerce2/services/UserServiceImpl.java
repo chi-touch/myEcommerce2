@@ -306,11 +306,11 @@ public class UserServiceImpl implements UserService{
 //        order.setProductQuantity(addProductRequest.getProductQuantity());
 //        orderRepository.save(order);
     @Override
-    public RemoveProductResponse removeProduct(String productName) {
-        if (productName == null) {
-            throw new InvalidInputEnteredException("This product name does not exist");
+    public RemoveProductResponse removeProduct(String productId) {
+        if (productId == null) {
+            throw new InvalidInputEnteredException("This product does not exist");
         }
-        Product product = productRepository.deleteByProductName(productName);
+        Product product = productRepository.deleteByProductName(productId);
         RemoveProductResponse removeResponse = new RemoveProductResponse();
         removeResponse.setMessage("Product was successfully removed");
         return removeResponse;

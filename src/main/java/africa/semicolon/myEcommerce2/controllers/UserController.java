@@ -65,16 +65,6 @@ public class UserController {
             }
         }
 
-        @PostMapping("/cart")
-        public ResponseEntity<?> addItemToCart(@RequestBody AddProductRequest addProductRequest) {
-            try {
-                var answer = userService.addItemToCart(addProductRequest);
-                return new ResponseEntity<>(new ApiResponse(true, answer), CREATED);
-            }catch (InvalidInputEnteredException e){
-                return new ResponseEntity<>(new ApiResponse(false, e.getMessage()), BAD_REQUEST);
-            }
-        }
-
         @PostMapping("/product/create")
         public ResponseEntity<?> createProduct(@RequestBody CreateProductRequest createProductRequest) {
             try {
@@ -85,17 +75,17 @@ public class UserController {
             }
         }
 
-        @DeleteMapping("/product")
-        public ResponseEntity<?> removeProduct(@RequestBody String productName) {
+        @DeleteMapping("/removeProduct/{productId}")
+        public ResponseEntity<?> removeProduct(@PathVariable String productId) {
             try {
-                var answer = userService.removeProduct(productName);
+                var answer = productService.removeProduct(productId);
                 return new ResponseEntity<>(new ApiResponse(true, answer), CREATED);
             }catch (InvalidInputEnteredException e){
                 return new ResponseEntity<>(new ApiResponse(false, e.getMessage()), BAD_REQUEST);
             }
         }
 
-        @GetMapping("/cart")
+        @PostMapping("/viewCart")
         public ResponseEntity<?> viewCart(@RequestBody ViewCartRequest viewCartRequest) {
             try {
                 var answer = userService.viewCart(viewCartRequest);
@@ -104,6 +94,16 @@ public class UserController {
                 return new ResponseEntity<>(new ApiResponse(false, e.getMessage()), BAD_REQUEST);
             }
         }
+
+    @PostMapping("/cart")
+    public ResponseEntity<?> addItemToCart(@RequestBody AddProductRequest addProductRequest) {
+        try {
+            var answer = userService.addItemToCart(addProductRequest);
+            return new ResponseEntity<>(new ApiResponse(true, answer), CREATED);
+        }catch (InvalidInputEnteredException e){
+            return new ResponseEntity<>(new ApiResponse(false, e.getMessage()), BAD_REQUEST);
+        }
+    }
 
 
         @PostMapping("/order")

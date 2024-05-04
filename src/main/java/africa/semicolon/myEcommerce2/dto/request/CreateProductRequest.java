@@ -13,7 +13,7 @@ public class CreateProductRequest {
     private BigDecimal price;
     private String description;
     private String userId;
-
+    private int productQuantity;
     @Override
     public String toString() {
         return "CreateProductRequest{" +
@@ -21,6 +21,12 @@ public class CreateProductRequest {
                 ", productType=" + productType +
                 ", price=" + price +
                 ", description='" + description + '\'' +
+                ", userId='" + userId + '\'' +
+                ", productQuantity=" + productQuantity +
                 '}';
     }
+
+
+
+
 }

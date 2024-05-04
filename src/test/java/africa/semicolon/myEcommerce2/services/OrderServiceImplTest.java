@@ -30,7 +30,7 @@ public class OrderServiceImplTest {
         EcommerceUser user = userList.get(0);
         OrderRequest orderRequest = new OrderRequest();
 
-        List<Product> productList = new ArrayList<>(List.of(new Product()));
+        List<Product> productList = new ArrayList<>();
 //        orderRequest.setAmount(BigDecimal.valueOf(2000));
         orderRequest.setCountry("Ghana");
         orderRequest.setState("Abia");

@@ -16,7 +16,6 @@ public interface ProductRepository extends MongoRepository<Product, String> {
 
     Product searchByProductName(String productName);
     Product deleteByProductName(String productName);
-
    List<Product> findByProductName(String productName);
 
    // Product addMyProduct(AddProductRequest addProductRequest);

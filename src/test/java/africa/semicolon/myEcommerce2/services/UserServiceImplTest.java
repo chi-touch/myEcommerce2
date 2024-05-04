@@ -205,7 +205,7 @@ public class UserServiceImplTest {
         EcommerceUser user = userList.get(0);
         OrderRequest orderRequest = new OrderRequest();
 
-        List<Product> productList = new ArrayList<>(List.of(new Product()));
+        List<Product> productList = new ArrayList<>();
         //orderRequest.setAmount(BigDecimal.valueOf(2000));
         orderRequest.setCountry("Ghana");
         orderRequest.setState("Abia");
@@ -232,7 +232,7 @@ public class UserServiceImplTest {
         EcommerceUser user = userList.get(0);
         OrderRequest orderRequest = new OrderRequest();
 
-        List<Product> productList = new ArrayList<>(List.of(new Product()));
+        List<Product> productList = new ArrayList<>();
 //        orderRequest.setAmount(BigDecimal.valueOf(2000));
         orderRequest.setCountry("Ghana");
         orderRequest.setState("Abia");
@@ -263,7 +263,7 @@ public class UserServiceImplTest {
         EcommerceUser user = userList.get(0);
 
         OrderRequest orderRequest = new OrderRequest();
-        List<Product> productList = new ArrayList<>(List.of(new Product()));
+        List<Product> productList = new ArrayList<>();
 //        orderRequest.setAmount(BigDecimal.valueOf(2000));
         orderRequest.setCountry("Ghana");
         orderRequest.setState("Abia");
@@ -397,12 +397,12 @@ public class UserServiceImplTest {
         cart.addProductToCart(item);
 
 
-        ViewCartRequest viewCartRequest = new ViewCartRequest();
-        viewCartRequest.setUsername("div2");
-        viewCartRequest.setCart(cart);
-        viewCartRequest.setProductName("shoe");
-        viewCartRequest.setProductQuantity(1);
-        viewCartRequest.setPrice(BigDecimal.valueOf(2000));
+        //ViewCartRequest viewCartRequest = new ViewCartRequest();
+       // viewCartRequest.setUsername("div2");
+        //viewCartRequest.setCart(cart);
+        //viewCartRequest.setProductName("shoe");
+       // viewCartRequest.setProductQuantity(1);
+       // viewCartRequest.setPrice(BigDecimal.valueOf(2000));
         userService.viewCart(viewCartRequest);
         //List <Item> items = cart.getItems();
 

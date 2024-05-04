@@ -9,8 +9,10 @@ import africa.semicolon.myEcommerce2.dto.request.AddProductRequest;
 import africa.semicolon.myEcommerce2.dto.request.CreateProductRequest;
 import africa.semicolon.myEcommerce2.dto.response.AddProductResponse;
 import africa.semicolon.myEcommerce2.dto.response.CreateProductResponse;
+import africa.semicolon.myEcommerce2.dto.response.RemoveProductResponse;
 import africa.semicolon.myEcommerce2.exceptions.InvalidInputEnteredException;
 import africa.semicolon.myEcommerce2.exceptions.ProductAlreadyExistException;
+import africa.semicolon.myEcommerce2.exceptions.ProductNotFoundException;
 import africa.semicolon.myEcommerce2.exceptions.UserNameNotFoundException;
 import africa.semicolon.myEcommerce2.utils.Mapper;
 import lombok.AllArgsConstructor;
@@ -70,8 +72,8 @@ public class ProductServiceImpl implements ProductService {
 
 
     @Override
-    public void delete(String productName) {
-        productRepository.deleteByProductName(productName);
+    public void delete(String productId) {
+        productRepository.deleteByProductName(productId);
     }
 
 
@@ -118,6 +120,21 @@ public class ProductServiceImpl implements ProductService {
         AddProductResponse addProductResponse = new AddProductResponse();
         addProductResponse.setMessage("Product was added successfully");
         return addProductResponse;
+    }
+
+    @Override
+    public RemoveProductResponse removeProduct(String productId) {
+        if (productId == null){
+            throw new InvalidInputEnteredException("Product ID cannot be empty");
+        }
+        boolean foundProduct = productRepository.findById(productId).isPresent();//()-> new ProductNotFoundException("Product"));
+        if (!foundProduct){
+            throw new InvalidInputEnteredException("Product not found");
+        }
+        productRepository.deleteById(productId);
+        RemoveProductResponse removeResponse = new RemoveProductResponse();
+        removeResponse.setMessage("Product was successfully removed");
+        return removeResponse;
     }
 //        Product foundUser =findProductByName(searchRequest.getProductName());
 //        String productName = searchRequest.getProductName();
