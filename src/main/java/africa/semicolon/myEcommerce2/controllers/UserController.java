@@ -95,10 +95,10 @@ public class UserController {
             }
         }
 
-    @PostMapping("/cart")
-    public ResponseEntity<?> addItemToCart(@RequestBody AddProductRequest addProductRequest) {
+    @PostMapping("/addProduct")
+    public ResponseEntity<?> addProduct(@RequestBody AddProductRequest addProductRequest) {
         try {
-            var answer = userService.addItemToCart(addProductRequest);
+            var answer = userService.addProduct(addProductRequest);
             return new ResponseEntity<>(new ApiResponse(true, answer), CREATED);
         }catch (InvalidInputEnteredException e){
             return new ResponseEntity<>(new ApiResponse(false, e.getMessage()), BAD_REQUEST);

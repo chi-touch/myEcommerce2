@@ -17,16 +17,18 @@ import java.util.List;
 @Document
 public class EcommerceUser {
     @Id
-    private String id;
+    private String userId;
     private String firstName;
     private String lastName;
     private String email;
     private String password;
-   // private String receiverName;
+
     private String receiverPhoneNumber;
+
+
     private CreditCardInformation creditCardInfo;
     //private List<Product> productList = new ArrayList<>();
-    private Role role = Role.ADMIN;
+    private Role role;
     @Indexed(unique = true)
     private String username;
     private boolean isLocked = false;

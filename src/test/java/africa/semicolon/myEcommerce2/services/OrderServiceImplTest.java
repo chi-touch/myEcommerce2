@@ -36,7 +36,7 @@ public class OrderServiceImplTest {
         orderRequest.setState("Abia");
         orderRequest.setStreet("Sabo");
         orderRequest.setHouseNumber("12");
-        Order order = orderService.order(orderRequest, user.getId(), productList);
+        Order order = orderService.order(orderRequest, user.getUserId(), productList);
         assertThat(order).isNotNull();
     }
 

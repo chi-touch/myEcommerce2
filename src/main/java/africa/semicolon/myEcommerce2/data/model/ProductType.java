@@ -4,7 +4,6 @@ public enum ProductType {
     UTENSILS,
     ELECTRONICS,
     ACCESSORIES,
-
     FASHION,
     PHONES;
 

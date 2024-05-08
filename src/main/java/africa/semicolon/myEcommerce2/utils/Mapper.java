@@ -3,10 +3,6 @@ package africa.semicolon.myEcommerce2.utils;
 import africa.semicolon.myEcommerce2.data.model.*;
 import africa.semicolon.myEcommerce2.dto.request.*;
 import africa.semicolon.myEcommerce2.dto.response.CheckOutResponse;
-import africa.semicolon.myEcommerce2.dto.response.LogOutResponse;
-import africa.semicolon.myEcommerce2.dto.response.ViewCartResponse;
-
-import static africa.semicolon.myEcommerce2.data.model.TransactionStatus.PENDING;
 
 public class Mapper {
     public static EcommerceUser mapper(RegisterRequest registerRequest){
@@ -20,7 +16,6 @@ public class Mapper {
         cardInformation.setCreditCardNumber(registerRequest.getCreditCardNumber());
         cardInformation.setCardExpirationMonth(registerRequest.getCardExpirationMonth());
         cardInformation.setCardExpirationYear(registerRequest.getCardExpirationYear());
-        cardInformation.setCvv(registerRequest.getCvv());
         myUser.setCreditCardInfo(cardInformation);
 
 
@@ -40,12 +35,15 @@ public class Mapper {
         return myUser;
     }
 
-    public static Product productMapper(CreateProductRequest createProduct){
+    public static Product  productMapper(CreateProductRequest createProduct){
         Product product = new Product();
         product.setProductName(createProduct.getProductName());
         product.setProductType(createProduct.getProductType());
         product.setDescription(createProduct.getDescription());
+        product.setUserId(createProduct.getUserId());
         product.setPrice(createProduct.getPrice());
+       // product.setUsername(createProduct.getUsername());
+        product.setProductQuantity(createProduct.getProductQuantity());
         return product;
     }
 
@@ -97,7 +95,6 @@ public class Mapper {
     public static CreditCardInformation creditCardMap(UpdateCreditCardInformationRequest updateCreditCardInformationRequest) {
         CreditCardInformation creditCardInformation = new CreditCardInformation();
         creditCardInformation.setCreditCardNumber(updateCreditCardInformationRequest.getCreditCardNumber());
-        creditCardInformation.setCvv(updateCreditCardInformationRequest.getCvv());
         creditCardInformation.setCardHolderName(updateCreditCardInformationRequest.getCardHolderName());
         creditCardInformation.setCardExpirationMonth(updateCreditCardInformationRequest.getCardExpirationMonth());
         creditCardInformation.setCardExpirationYear(updateCreditCardInformationRequest.getCardExpirationYear());

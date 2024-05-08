@@ -53,10 +53,11 @@ public class UserServiceImpl implements UserService{
             throw new UserAlreadyExistException("this user already exist");
         }
        EcommerceUser user = Mapper.mapper(registerRequest);
-        userRepository.save(user);
+        EcommerceUser savedUser = userRepository.save(user);
 
         RegisterResponse registerResponse = new RegisterResponse();
         registerResponse.setMessage("Registration is successful");
+        registerResponse.setUserId(savedUser.getUserId());
         return registerResponse;
     }
     private boolean userAlreadyExist(String username){
@@ -73,7 +74,7 @@ public class UserServiceImpl implements UserService{
         String username = loginRequest.getUsername();
         String password = loginRequest.getPassword();
         EcommerceUser foundUser = userRepository.findByUsername(loginRequest.getUsername());
-        foundUser.setLocked(true);
+        foundUser.setLocked(false);
         userRepository.save(foundUser);
         if (isValidUsernameAndPassword(username, password)) {
             LoginResponse response = new LoginResponse();
@@ -100,30 +101,30 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public ShoppingCart addItemToCart(AddProductRequest addProductRequest) {
-        if (addProductRequest.getUsername() == null){
+    public ShoppingCart addItemToCart(AddItemRequest addItemRequest) {
+        if (addItemRequest.getUsername() == null){
             throw new InvalidInputEnteredException("This username is not valid");
         }
-      Product foundProduct = productService.findProductByName(addProductRequest.getProductName());
-      EcommerceUser foundUser = userRepository.findByUsername(addProductRequest.getUsername());
+
+      Product foundProduct = productService.findProductByName(addItemRequest.getProductName());
+
+      EcommerceUser foundUser = userRepository.findByUsername(addItemRequest.getUsername());
       ShoppingCart foundCart = foundUser.getCart();
       addProduct(foundProduct,foundUser,foundCart);
       ShoppingCart newShoppingCartty = shoppingCartRepository.save(foundCart);
 
-        return newShoppingCartty;
+       return newShoppingCartty;
     }
+
 
     public void addProduct(Product foundProduct,EcommerceUser foundUser,ShoppingCart foundCart) {
 
         Item item = new Item();
         item.setProductId(foundProduct.getId());
         item.setProductName(foundProduct.getProductName());
-        item.setQuantityOfProduct(1);
+        item.setQuantityOfProduct(foundProduct.getProductQuantity());
         item.setPrice(foundProduct.getPrice());
-//        item.setUserRole(foundProduct.getUserRole());
         foundCart.addProductToCart(item);
-
-
     }
 
 
@@ -154,11 +155,9 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public CreateProductResponse create(CreateProductRequest createProduct) {
-        if (productAlreadyExist(createProduct.getProductName())){
-            throw new ProductAlreadyExistException("this product already exist");
-        }
-
-
+//        if (productAlreadyExist(createProduct.getProductName())){
+//            throw new ProductAlreadyExistException("this product already exist");
+//        }
         Product product = Mapper.productMapper(createProduct);
         productRepository.save(product);
         CreateProductResponse createProductResponse = new CreateProductResponse();
@@ -288,6 +287,11 @@ public class UserServiceImpl implements UserService{
 //        if (foundProduct == null){
 //            throw new InvalidInputEnteredException("This product does not exist");
 //        }
+        EcommerceUser foundUser = userRepository.findById(addProductRequest.getUserId()).orElseThrow(()-> new UserNameNotFoundException("User not found"));
+        if(!foundUser.getRole().equals(Role.ADMIN)){
+            throw new InvalidInputEnteredException("You are not allowed to add product");
+        }
+
        Product product = new Product();
 
         product.setProductName(addProductRequest.getProductName());
@@ -328,9 +332,11 @@ public class UserServiceImpl implements UserService{
 //            throw new ShoppingCartIsEmptyException("Your cart is empty");
 //        }
         EcommerceUser foundUser = findByUsername(viewCartRequest.getUsername());
+
         validateLoginStatusOf(foundUser);
 
         ShoppingCart shoppingCart = Mapper.mapViewCart(viewCartRequest).getCart();
+        shoppingCartRepository.save(shoppingCart);
         return shoppingCart;
     }
 

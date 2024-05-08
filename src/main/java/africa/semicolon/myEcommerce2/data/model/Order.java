@@ -27,6 +27,8 @@ public class Order {
     private String deliveryDate = deliveryAt();
     private String productName;
     private int productQuantity;
+    private EcommerceUser buyer;
+    private CustomerInformation customerInformation;
     private  String deliveryAt(){
         LocalDateTime  time = LocalDateTime.now();
 
@@ -47,9 +49,6 @@ public class Order {
     }
 
 
-    private EcommerceUser buyer;
 
-    @DBRef
-    private CustomerInformation customerInformation;
 
 }

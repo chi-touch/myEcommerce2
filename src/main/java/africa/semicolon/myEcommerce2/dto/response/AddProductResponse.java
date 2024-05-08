@@ -7,13 +7,8 @@ import lombok.Setter;
 @Getter
 @Setter
 public class AddProductResponse {
+    private String productId;
     private String message;
 
-    private String productId;
-    private String productName;
-    private String category;
-    private String description;
-    private String price;
-    private Integer quantity;
 
 }

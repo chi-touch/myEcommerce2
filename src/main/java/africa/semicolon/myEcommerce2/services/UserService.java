@@ -17,7 +17,7 @@ public interface UserService {
 
     LogOutResponse logOut(LogOutRequest logOutRequest);
 
-    ShoppingCart addItemToCart(AddProductRequest addProductRequest);
+    ShoppingCart addItemToCart(AddItemRequest addItemRequest);
     AddProductResponse addProduct(AddProductRequest addProductRequest);
     RemoveProductResponse removeProduct(String productId);
 

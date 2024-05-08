@@ -1,5 +1,6 @@
 package africa.semicolon.myEcommerce2.services;
 
+import africa.semicolon.myEcommerce2.dto.request.AddItemRequest;
 import africa.semicolon.myEcommerce2.dto.request.CreateProductRequest;
 import africa.semicolon.myEcommerce2.dto.response.CreateProductResponse;
 import africa.semicolon.myEcommerce2.exceptions.ProductAlreadyExistException;
@@ -32,6 +33,8 @@ public class ProductServiceImplTest {
         createProductRequest.setProductType(ELECTRONICS);
         createProductRequest.setPrice(BigDecimal.valueOf(1000));
         createProductRequest.setDescription("kitchen tools");
+        createProductRequest.setUserId("1");
+
 
         CreateProductResponse createProductResponse = productService.create(createProductRequest);
         productService.count().equals(1L);
@@ -66,6 +69,7 @@ public class ProductServiceImplTest {
         createProductRequest2.setProductName("techno");
         createProductRequest2.setPrice(BigDecimal.valueOf(2000));
         createProductRequest2.setProductType(ACCESSORIES);
+         createProductRequest2.setUserId("user");
         productService.create(createProductRequest2);
 
         CreateProductRequest createProductRequest3 = new CreateProductRequest();
@@ -137,5 +141,7 @@ public class ProductServiceImplTest {
         productService.create(createProductRequest);
         assertEquals("knife", productService.findProductByName("knife").getProductName());
     }
+
+
 
 }

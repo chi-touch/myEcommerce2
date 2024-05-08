@@ -29,7 +29,7 @@ public class RegisterRequest {
     private String cardHolderName;
     private String cardExpirationMonth;
     private String cardExpirationYear;
-    private String cvv;
+
 
 
     private String username;

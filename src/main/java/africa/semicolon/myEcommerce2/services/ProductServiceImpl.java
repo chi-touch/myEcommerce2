@@ -28,17 +28,22 @@ public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
     private final EcommerceUserRepository userRepository;
     @Override
-    public CreateProductResponse create(CreateProductRequest createProduct) {
+    public CreateProductResponse create(CreateProductRequest createProductRequest) {
 
-        if (productAlreadyExist(createProduct.getProductName())){
-            throw new ProductAlreadyExistException("this product already exist");
-        }
-        EcommerceUser foundUser = userRepository.findById(createProduct.getUserId()).orElseThrow(()-> new UserNameNotFoundException("User not found"));
+//        if (productAlreadyExist(createProduct.getProductName())){
+//            throw new ProductAlreadyExistException("this product already exist");
+//        }
+
+
+
+        EcommerceUser foundUser = userRepository.findById(createProductRequest.getUserId()).orElseThrow(()-> new UserNameNotFoundException("User not found"));
         if(!foundUser.getRole().equals(Role.ADMIN)){
             throw new InvalidInputEnteredException("You are not allowed to create product");
         }
 
-        Product product = Mapper.productMapper(createProduct);
+
+
+        Product product = Mapper.productMapper(createProductRequest);
         productRepository.save(product);
         CreateProductResponse createProductResponse = new CreateProductResponse();
         createProductResponse.setMessage("product created successfully");

@@ -8,7 +8,8 @@ public class CreditCardInformation {
     private String cardHolderName;
     private String cardExpirationMonth;
     private String cardExpirationYear;
-    private String cvv;
+    private CardType cardType;
+
 
     @Override
     public String toString() {
@@ -17,11 +18,10 @@ public class CreditCardInformation {
                 ", cardHolderName='" + cardHolderName + '\'' +
                 ", cardExpirationMonth='" + cardExpirationMonth + '\'' +
                 ", cardExpirationYear='" + cardExpirationYear + '\'' +
-                ", cvv='" + cvv + '\'' +
                 ", cardType=" + cardType +
                 '}';
     }
 
-    private CardType cardType;
+
 
 }

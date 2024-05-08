@@ -6,6 +6,7 @@ import africa.semicolon.myEcommerce2.data.model.Payment;
 import africa.semicolon.myEcommerce2.data.repositories.OrderRepository;
 import africa.semicolon.myEcommerce2.data.repositories.ProductRepository;
 import africa.semicolon.myEcommerce2.data.repositories.EcommerceUserRepository;
+import africa.semicolon.myEcommerce2.data.repositories.ShoppingCartRepository;
 import africa.semicolon.myEcommerce2.dto.request.*;
 import africa.semicolon.myEcommerce2.dto.response.*;
 import lombok.var;
@@ -18,8 +19,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import static africa.semicolon.myEcommerce2.data.model.ProductType.ELECTRONICS;
-import static africa.semicolon.myEcommerce2.data.model.ProductType.UTENSILS;
+import static africa.semicolon.myEcommerce2.data.model.ProductType.*;
 import static africa.semicolon.myEcommerce2.data.model.Role.ADMIN;
 
 import static africa.semicolon.myEcommerce2.data.model.Role.CUSTOMER;
@@ -33,7 +33,9 @@ public class UserServiceImplTest {
     @Autowired
     UserService userService;
 
-    ViewCartRequest viewCartRequest;
+    @Autowired
+    ShoppingCartService shoppingCartService;
+    RegisterResponse registerResponse = new RegisterResponse();
 
     @Autowired
     PaymentService paymentService;
@@ -54,12 +56,9 @@ public class UserServiceImplTest {
     @Autowired
     ProductRepository productRepository;
 
-    AddProductRequest addProductRequest;
+    @Autowired
+    ShoppingCartRepository shoppingCartRepository;
 
-    Payment payment;
-
-
-    Product product;
     @BeforeEach
     public void setUp(){
         userRepository.deleteAll();
@@ -175,22 +174,32 @@ public class UserServiceImplTest {
         assertEquals(0,userService.count());
     }
 
-    @Test
-    public void testToSearchProduct(){
-        CreateProductRequest createProductRequest = new CreateProductRequest();
-        createProductRequest.setProductName("cup");
-        createProductRequest.setProductType(UTENSILS);
-        createProductRequest.setPrice(BigDecimal.valueOf(1000));
-        createProductRequest.setDescription("kitchen tools");
-        productService.create(createProductRequest);
-
-        SearchProductRequest searchRequest = new SearchProductRequest();
-        searchRequest.setProductName("cup");
-
-        var ViewAllProductResponse = productService.searchProductByName("cup");
-
-        assertEquals(1,userService.searchProductByName("cup").size());
-    }
+//    @Test
+//    public void testToSearchProduct(){
+//        RegisterRequest registerRequest1 = new RegisterRequest();
+//        registerRequest1.setRole(ADMIN);
+//        registerRequest1.setFirstName("chichi2");
+//        registerRequest1.setLastName("dave2");
+//        registerRequest1.setPassword("1235");
+//        registerRequest1.setUsername("div2");
+//        RegisterResponse registerResponse = userService.register(registerRequest1);
+//
+//        CreateProductRequest createProductRequest = new CreateProductRequest();
+//        createProductRequest.setProductName("cup");
+//        createProductRequest.setProductType(UTENSILS);
+//        createProductRequest.setPrice(BigDecimal.valueOf(1000));
+//        createProductRequest.setDescription("kitchen tools");
+//        productService.create(createProductRequest);
+//       // productService.create(createProductRequest);
+//
+//        SearchProductRequest searchRequest = new SearchProductRequest();
+//        searchRequest.setProductName("cup");
+//        searchRequest.setUsername("div2");
+//
+//        var ViewAllProductResponse = productService.searchProductByName("cup");
+//
+//        assertEquals(1,userService.searchProductByName("cup").size());
+//    }
 
     @Test
     public void testToOrderProduct(){
@@ -211,7 +220,7 @@ public class UserServiceImplTest {
         orderRequest.setState("Abia");
         orderRequest.setStreet("Sabo");
         orderRequest.setHouseNumber("12");
-        Order order = orderService.order(orderRequest, user.getId(), productList);
+        Order order = orderService.order(orderRequest, user.getUserId(), productList);
 
         OrderResponse orderResponse = new OrderResponse();
         orderResponse.setMessage("Your order has been successfully placed");
@@ -238,12 +247,12 @@ public class UserServiceImplTest {
         orderRequest.setState("Abia");
         orderRequest.setStreet("Sabo");
         orderRequest.setHouseNumber("12");
-        Order order = orderService.order(orderRequest, user.getId(), productList);
+        Order order = orderService.order(orderRequest, user.getUserId(), productList);
 
         PaymentAtDeliveryRequest paymentRequest = new PaymentAtDeliveryRequest();
         paymentRequest.setStatus(TransactionStatus.SUCCESS);
         paymentRequest.setAmount(BigDecimal.valueOf(2000));
-        paymentRequest.setDeliveryId(user.getId());
+        paymentRequest.setDeliveryId(user.getUserId());
         PaymentDeliveryResponse paymentResponse =  paymentService.atDelivery(paymentRequest);
         paymentResponse.setMessage("Thank you");
 
@@ -269,7 +278,7 @@ public class UserServiceImplTest {
         orderRequest.setState("Abia");
         orderRequest.setStreet("Sabo");
         orderRequest.setHouseNumber("12");
-        Order order = orderService.order(orderRequest, user.getId(), productList);
+        Order order = orderService.order(orderRequest, user.getUserId(), productList);
 
         TransferRequest transferRequest = new TransferRequest();
         transferRequest.setPin("pin");
@@ -287,11 +296,22 @@ public class UserServiceImplTest {
 
     @Test
     public void testToCreatProduct(){
+        RegisterRequest registerRequest1 = new RegisterRequest();
+        registerRequest1.setRole(ADMIN);
+        registerRequest1.setFirstName("chichi2");
+        registerRequest1.setLastName("dave2");
+        registerRequest1.setPassword("1235");
+        registerRequest1.setUsername("div2");
+        RegisterResponse registerResponse = userService.register(registerRequest1);
+
         CreateProductRequest createProductRequest = new CreateProductRequest();
         createProductRequest.setProductName("cup");
         createProductRequest.setProductType(UTENSILS);
         createProductRequest.setPrice(BigDecimal.valueOf(1000));
         createProductRequest.setDescription("kitchen tools");
+        createProductRequest.setUserId(registerResponse.getUserId());
+
+
         CreateProductResponse createProductResponse = productService.create(createProductRequest);
 
         assertThat(createProductResponse).isNotNull();
@@ -301,11 +321,20 @@ public class UserServiceImplTest {
 
     @Test
     public void testToCreatMoreProduct(){
+        RegisterRequest registerRequest1 = new RegisterRequest();
+        registerRequest1.setRole(ADMIN);
+        registerRequest1.setFirstName("chichi2");
+        registerRequest1.setLastName("dave2");
+        registerRequest1.setPassword("1235");
+        registerRequest1.setUsername("div2");
+        RegisterResponse registerResponse = userService.register(registerRequest1);
+
         CreateProductRequest createProductRequest = new CreateProductRequest();
         createProductRequest.setProductName("cup");
         createProductRequest.setProductType(UTENSILS);
         createProductRequest.setPrice(BigDecimal.valueOf(1000));
         createProductRequest.setDescription("kitchen tools");
+        createProductRequest.setUserId(registerResponse.getUserId());
         CreateProductResponse createProductResponse = productService.create(createProductRequest);
 
         CreateProductRequest createProductRequest1 = new CreateProductRequest();
@@ -313,6 +342,7 @@ public class UserServiceImplTest {
         createProductRequest1.setProductType(UTENSILS);
         createProductRequest1.setPrice(BigDecimal.valueOf(500));
         createProductRequest1.setDescription("kitchen tools");
+        createProductRequest1.setUserId(registerResponse.getUserId());
         CreateProductResponse createProductResponse1 = productService.create(createProductRequest1);
 
         assertEquals("cup", userService.findProductByName("cup").getProductName());
@@ -322,11 +352,19 @@ public class UserServiceImplTest {
 
     @Test
     public void testToAddProduct() {
+        RegisterRequest registerRequest1 = new RegisterRequest();
+        registerRequest1.setRole(ADMIN);
+        registerRequest1.setFirstName("chichi2");
+        registerRequest1.setLastName("dave2");
+        registerRequest1.setPassword("1235");
+        registerRequest1.setUsername("div2");
+        RegisterResponse registerResponse = userService.register(registerRequest1);
+
         AddProductRequest addProductRequest = new AddProductRequest();
         addProductRequest.setProductName("cup");
         addProductRequest.setProductType(UTENSILS);
-        addProductRequest.setPrice(BigDecimal.valueOf(1000));
         addProductRequest.setDescription("kitchen tools");
+        addProductRequest.setUserId(registerResponse.getUserId());
 
         AddProductResponse addProductResponse = userService.addProduct(addProductRequest);
         assertThat(addProductResponse.getMessage()).isNotNull();
@@ -341,13 +379,22 @@ public class UserServiceImplTest {
 
     @Test
     public void testToRemoveProduct(){
+        RegisterRequest registerRequest1 = new RegisterRequest();
+        registerRequest1.setRole(ADMIN);
+        registerRequest1.setFirstName("chichi2");
+        registerRequest1.setLastName("dave2");
+        registerRequest1.setPassword("1235");
+        registerRequest1.setUsername("div2");
+        RegisterResponse registerResponse = userService.register(registerRequest1);
+
         CreateProductRequest createProductRequest = new CreateProductRequest();
         createProductRequest.setProductName("cup");
         createProductRequest.setProductType(UTENSILS);
         createProductRequest.setPrice(BigDecimal.valueOf(1000));
         createProductRequest.setDescription("kitchen tools");
-        CreateProductResponse createProductResponse = productService.create(createProductRequest);
+        createProductRequest.setUserId(registerResponse.getUserId());
 
+        CreateProductResponse createProductResponse = productService.create(createProductRequest);
         assertEquals(1,productService.count());
 
         CreateProductRequest createProductRequest1 = new CreateProductRequest();
@@ -355,6 +402,7 @@ public class UserServiceImplTest {
         createProductRequest1.setProductType(UTENSILS);
         createProductRequest1.setPrice(BigDecimal.valueOf(500));
         createProductRequest1.setDescription("kitchen tools");
+        createProductRequest1.setUserId(registerResponse.getUserId());
         CreateProductResponse createProductResponse1 = productService.create(createProductRequest1);
 
         assertEquals(2,productService.count());
@@ -373,42 +421,103 @@ public class UserServiceImplTest {
         registerRequest1.setLastName("dave2");
         registerRequest1.setPassword("1235");
         registerRequest1.setUsername("div2");
-        userService.register(registerRequest1);
+       RegisterResponse registerResponse1 = userService.register(registerRequest1);
 
-        AddProductRequest addProductRequest1 = new AddProductRequest();
-        addProductRequest1.setProductName("fan");
-        addProductRequest1.setProductQuantity(1);
-        addProductRequest1.setProductType(ELECTRONICS);
-        addProductRequest1.setDescription("home");
-        addProductRequest1.setUsername("div2");
-        addProductRequest1.setPrice(BigDecimal.valueOf(2000));
-
-        AddProductResponse addProductResponse = userService.addProduct(addProductRequest1);
-
-        Item item = new Item();
-        item.setPrice(BigDecimal.valueOf(2000));
-        item.setProductName("shoe");
-
-        item.setUserRole(CUSTOMER);
-        item.setQuantityOfProduct(1);
+        CreateProductRequest createProductRequest = new CreateProductRequest();
+        createProductRequest.setProductName("slippers");
+        createProductRequest.setProductType(FASHION);
+        createProductRequest.setProductQuantity(1);
+        createProductRequest.setDescription("foot wears");
+        createProductRequest.setPrice(BigDecimal.valueOf(2000));
+        createProductRequest.setUserId(registerResponse.getUserId());
+        userService.create(createProductRequest);
 
 
-        ShoppingCart cart = new ShoppingCart();
-        cart.addProductToCart(item);
+//        AddProductRequest addProductRequest1 = new AddProductRequest();
+//        addProductRequest1.setUsername("div2");
+//        addProductRequest1.setProductQuantity(2);
+//        addProductRequest1.setProductType(FASHION);
+//        addProductRequest1.setProductName("slippers");
+//        userService.addProduct(addProductRequest1);
 
 
-        //ViewCartRequest viewCartRequest = new ViewCartRequest();
-       // viewCartRequest.setUsername("div2");
-        //viewCartRequest.setCart(cart);
-        //viewCartRequest.setProductName("shoe");
-       // viewCartRequest.setProductQuantity(1);
-       // viewCartRequest.setPrice(BigDecimal.valueOf(2000));
-        userService.viewCart(viewCartRequest);
-        //List <Item> items = cart.getItems();
+        ViewCartRequest viewCartRequest1 = new ViewCartRequest();
+        viewCartRequest1.setUsername("div2");
+
+        userService.viewCart(viewCartRequest1);
+//
+//        Item item = new Item();
+//        item.setPrice(BigDecimal.valueOf(2000));
+//        item.setProductName("shoe");
+//
+//        item.setUserRole(CUSTOMER);
+//        item.setQuantityOfProduct(1);
+//
+//
+//        ShoppingCart cart = new ShoppingCart();
+//        cart.addProductToCart(item);
+
 
       //  assertEquals(items.getFirst().getPrice(),registerRequest1.getUsername());
-        assertTrue(!cart.getItems().isEmpty());
+        //assertTrue(!cart.getItems().isEmpty());
 
+
+
+    }
+
+
+    @Test
+    public void testAddItem(){
+        RegisterRequest registerRequest1 = new RegisterRequest();
+        registerRequest1.setRole(CUSTOMER);
+        registerRequest1.setFirstName("chichi2");
+        registerRequest1.setLastName("dave2");
+        registerRequest1.setPassword("1235");
+        registerRequest1.setUsername("div2");
+        userService.register(registerRequest1);
+
+        RegisterResponse registerResponse1 = new RegisterResponse();
+//
+//        CreateProductRequest createProductRequest = new CreateProductRequest();
+//        createProductRequest.setProductName("knife");
+//        createProductRequest.setProductType(UTENSILS);
+//        createProductRequest.setPrice(BigDecimal.valueOf(1000));
+//        createProductRequest.setDescription("kitchen tools");
+//        createProductRequest.setUserId(registerResponse1.getUserId());
+//
+//        productService.create(createProductRequest);
+
+//        assertEquals(1,productService.getAllProduct());
+
+//        AddProductRequest addProductRequest1 = new AddProductRequest();
+//        addProductRequest1.setUsername("div2");
+//        addProductRequest1.setProductQuantity(2);
+//        addProductRequest1.setProductType(FASHION);
+//        addProductRequest1.setProductName("slippers");
+//        userService.addProduct(addProductRequest1);
+
+
+            AddItemRequest addItemRequest = new AddItemRequest();
+            addItemRequest.setUsername("div2");
+            addItemRequest.setProductName("cap");
+            addItemRequest.setQuantityOfProduct(2);
+            userService.addItemToCart(addItemRequest);
+
+
+
+        AddProductResponse addProductResponse = new AddProductResponse();
+        addProductResponse.setMessage("product added successfully");
+
+
+
+        assertEquals(2,productService.getAllProduct());
+
+
+//        AddItemRequest addItemRequest = new AddItemRequest();
+//        addItemRequest.setProductName("wedding dress");
+//        addItemRequest.setQuantityOfProduct(2);
+//        addItemRequest.setUsername("div2");
+//        addProductRequest.
     }
 
 

@@ -21,6 +21,8 @@ public class Product {
     private BigDecimal price;
     private String description;
     private String userId;
+    private String username;
+    private int productQuantity;
 
     private List<Order> orders = new ArrayList<>();
 
@@ -33,6 +35,4 @@ public class Product {
         return date.format(dateTimeFormatter);
     }
 
-
-    private int productQuantity;
 }
