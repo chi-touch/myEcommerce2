@@ -22,15 +22,11 @@ public class RegisterRequest {
     private String street;
     private String houseNumber;
 
-   // private String receiverName;
     private String receiverPhoneNumber;
 
     private String creditCardNumber;
     private String cardHolderName;
     private String cardExpirationMonth;
     private String cardExpirationYear;
-
-
-
     private String username;
 }

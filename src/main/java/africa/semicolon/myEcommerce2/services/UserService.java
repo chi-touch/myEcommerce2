@@ -1,12 +1,10 @@
 package africa.semicolon.myEcommerce2.services;
 
-import africa.semicolon.myEcommerce2.data.model.Order;
-import africa.semicolon.myEcommerce2.data.model.Product;
-import africa.semicolon.myEcommerce2.data.model.EcommerceUser;
-import africa.semicolon.myEcommerce2.data.model.ShoppingCart;
+import africa.semicolon.myEcommerce2.data.model.*;
 import africa.semicolon.myEcommerce2.dto.request.*;
 import africa.semicolon.myEcommerce2.dto.response.*;
 
+import java.util.Collection;
 import java.util.List;
 
 public interface UserService {
@@ -51,4 +49,8 @@ public interface UserService {
     TransferResponse transfer(TransferRequest transferRequest);
 
     PaymentDeliveryResponse delivery(PaymentAtDeliveryRequest paymentAtDeliveryRequest);
+
+    List<ShoppingCart> getItems();
+
+    List<Item> getUserCart(String userId);
 }

@@ -14,4 +14,6 @@ public interface EcommerceUserRepository extends MongoRepository<EcommerceUser, 
 
 
    String getByUsername(String username);
+
+   boolean existsByUsername(String username);
 }

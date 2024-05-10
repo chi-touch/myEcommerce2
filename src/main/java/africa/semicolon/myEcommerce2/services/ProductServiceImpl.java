@@ -113,9 +113,6 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public AddProductResponse add(AddProductRequest addProductRequest) {
-        if (addProductRequest.getUsername() == null){
-            throw new InvalidInputEnteredException("Invalid username or password");
-        }
 
         Product product = new Product();
         product.setProductName(addProductRequest.getProductName());

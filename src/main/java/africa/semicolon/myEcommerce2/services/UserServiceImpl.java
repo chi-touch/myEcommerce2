@@ -61,7 +61,7 @@ public class UserServiceImpl implements UserService{
         return registerResponse;
     }
     private boolean userAlreadyExist(String username){
-        return userRepository.findByUsername(username) != null;
+        return userRepository.existsByUsername(username);
     }
 
     @Override
@@ -102,25 +102,36 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public ShoppingCart addItemToCart(AddItemRequest addItemRequest) {
-        if (addItemRequest.getUsername() == null){
+        if (addItemRequest.getUsername() == null) {
             throw new InvalidInputEnteredException("This username is not valid");
         }
+        EcommerceUser foundUser = userRepository.findByUsername(addItemRequest.getUsername());
 
-      Product foundProduct = productService.findProductByName(addItemRequest.getProductName());
+        if (addItemRequest.getProductName() == null){
+            throw new ProductDoesExistException("this product does not exist");
+        }
 
-      EcommerceUser foundUser = userRepository.findByUsername(addItemRequest.getUsername());
+        Product foundProduct = new Product();
+        foundProduct.setProductId(addItemRequest.getProductId());
+        foundProduct.setUsername(addItemRequest.getUsername());
+        foundProduct.setProductName(addItemRequest.getProductName());
+        foundProduct.setProductQuantity(addItemRequest.getQuantityOfProduct());
+        foundProduct.setProductType(addItemRequest.getProductType());
+        foundProduct.setDescription(addItemRequest.getDescription());
+        foundProduct.setPrice(addItemRequest.getPrice());
+        productRepository.save(foundProduct);
+
       ShoppingCart foundCart = foundUser.getCart();
-      addProduct(foundProduct,foundUser,foundCart);
-      ShoppingCart newShoppingCartty = shoppingCartRepository.save(foundCart);
+      addItem(foundProduct,foundUser,foundCart);
+      ShoppingCart newShoppingCarry = shoppingCartRepository.save(foundCart);
+      userRepository.save(foundUser);
 
-       return newShoppingCartty;
+       return newShoppingCarry;
     }
-
-
-    public void addProduct(Product foundProduct,EcommerceUser foundUser,ShoppingCart foundCart) {
+    public void addItem(Product foundProduct,EcommerceUser foundUser,ShoppingCart foundCart) {
 
         Item item = new Item();
-        item.setProductId(foundProduct.getId());
+        item.setProductId(foundProduct.getProductId());
         item.setProductName(foundProduct.getProductName());
         item.setQuantityOfProduct(foundProduct.getProductQuantity());
         item.setPrice(foundProduct.getPrice());
@@ -201,6 +212,18 @@ public class UserServiceImpl implements UserService{
         return deliveryResponse;
     }
 
+    @Override
+    public List<ShoppingCart>getItems() {
+        return shoppingCartRepository.findAll();
+    }
+
+    @Override
+    public List<Item> getUserCart(String userId) {
+      EcommerceUser foundUser = userRepository.findById(userId).orElseThrow(()-> new UserNameNotFoundException("this user does not exist"));
+      return foundUser.getCart().getItems();
+
+    }
+
 
     public TransferResponse transfer(TransferRequest transferRequest) {
         BigDecimal amount = transferRequest.getAmount();
@@ -274,19 +297,6 @@ public class UserServiceImpl implements UserService{
     @Override
     public AddProductResponse addProduct(AddProductRequest addProductRequest){
 
-//        if (addProductRequest == null){
-//            throw new InvalidInputEnteredException("Product can not be added");
-//        }
-//
-//        String productName = addProductRequest.getProductName();
-//        if (productName == null){
-//            throw new InvalidInputEnteredException("ProductName can not be null");
-//        }
-//
-//        Product foundProduct = productService.findProductByName(addProductRequest.getProductName());
-//        if (foundProduct == null){
-//            throw new InvalidInputEnteredException("This product does not exist");
-//        }
         EcommerceUser foundUser = userRepository.findById(addProductRequest.getUserId()).orElseThrow(()-> new UserNameNotFoundException("User not found"));
         if(!foundUser.getRole().equals(Role.ADMIN)){
             throw new InvalidInputEnteredException("You are not allowed to add product");
@@ -296,10 +306,16 @@ public class UserServiceImpl implements UserService{
 
         product.setProductName(addProductRequest.getProductName());
         product.setProductQuantity(addProductRequest.getProductQuantity());
-        productRepository.save(product);
+        product.setPrice(addProductRequest.getPrice());
+        product.setProductType(addProductRequest.getProductType());
+        product.setDescription(addProductRequest.getDescription());
+
+       Product foundProduct = productRepository.save(product);
+
 
         AddProductResponse addProductResponse = new AddProductResponse();
         addProductResponse.setMessage("Product was added successfully");
+        addProductResponse.setProductId(foundProduct.getProductId());
         return addProductResponse;
 
     }

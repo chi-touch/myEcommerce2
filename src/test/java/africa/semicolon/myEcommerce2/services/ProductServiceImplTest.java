@@ -1,9 +1,9 @@
 package africa.semicolon.myEcommerce2.services;
 
-import africa.semicolon.myEcommerce2.dto.request.AddItemRequest;
 import africa.semicolon.myEcommerce2.dto.request.CreateProductRequest;
+import africa.semicolon.myEcommerce2.dto.request.RegisterRequest;
 import africa.semicolon.myEcommerce2.dto.response.CreateProductResponse;
-import africa.semicolon.myEcommerce2.exceptions.ProductAlreadyExistException;
+import africa.semicolon.myEcommerce2.dto.response.RegisterResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +13,7 @@ import java.math.BigDecimal;
 
 import static africa.semicolon.myEcommerce2.data.model.ProductType.*;
 import static africa.semicolon.myEcommerce2.data.model.ProductType.UTENSILS;
+import static africa.semicolon.myEcommerce2.data.model.Role.ADMIN;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
@@ -20,6 +21,9 @@ public class ProductServiceImplTest {
 
     @Autowired
     ProductService productService;
+
+    @Autowired
+    UserService userService;
     @BeforeEach
     public void setUp(){
         productService.deleteAll();
@@ -28,17 +32,34 @@ public class ProductServiceImplTest {
 
     @Test
     public void testToCreateProduct(){
-        CreateProductRequest createProductRequest = new CreateProductRequest();
-        createProductRequest.setProductName("spoon");
-        createProductRequest.setProductType(ELECTRONICS);
-        createProductRequest.setPrice(BigDecimal.valueOf(1000));
-        createProductRequest.setDescription("kitchen tools");
-        createProductRequest.setUserId("1");
+        RegisterResponse registerResponse = registerRequest("Chi");
+
+        CreateProductRequest createProductRequest = getCreateProductRequest(registerResponse.getUserId(),"fan");
 
 
         CreateProductResponse createProductResponse = productService.create(createProductRequest);
         productService.count().equals(1L);
         assertThat(createProductResponse.getMessage()).isNotNull();
+    }
+
+    private RegisterResponse registerRequest(String username) {
+        RegisterRequest registerRequest1 = new RegisterRequest();
+        registerRequest1.setRole(ADMIN);
+        registerRequest1.setFirstName("chichi2");
+        registerRequest1.setLastName("dave2");
+        registerRequest1.setPassword("1235");
+        registerRequest1.setUsername(username);
+        return userService.register(registerRequest1);
+    }
+
+    private static CreateProductRequest getCreateProductRequest(String userId,String productName) {
+        CreateProductRequest createProductRequest = new CreateProductRequest();
+        createProductRequest.setProductName(productName);
+        createProductRequest.setProductType(ELECTRONICS);
+        createProductRequest.setPrice(BigDecimal.valueOf(1000));
+        createProductRequest.setDescription("kitchen tools");
+        createProductRequest.setUserId(userId);
+        return createProductRequest;
     }
 
     @Test

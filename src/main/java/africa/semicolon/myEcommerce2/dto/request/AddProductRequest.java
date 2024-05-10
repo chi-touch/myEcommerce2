@@ -17,7 +17,7 @@ public class AddProductRequest {
     private ProductType productType;
     private String description;
     private Role role;
-    private String username;
+    private BigDecimal price;
     private String userId;
 
 }

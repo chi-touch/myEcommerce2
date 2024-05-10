@@ -5,13 +5,10 @@ package africa.semicolon.myEcommerce2.data.model;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
-import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
 
 @Data
 @Document
@@ -22,6 +19,8 @@ public class EcommerceUser {
     private String lastName;
     private String email;
     private String password;
+    private String productName;
+    private int quantityOfProduct;
 
     private String receiverPhoneNumber;
 
@@ -51,7 +50,7 @@ public class EcommerceUser {
         return date.format(dateTimeFormatter);
     }
 
-    private ShoppingCart cart;
+    private ShoppingCart cart = new ShoppingCart();
 
     //private boolean logOut;
 

@@ -15,14 +15,14 @@ import java.util.List;
 @Document
 public class Product {
     @Id
-    private String id;
+    private String productId;
     private String productName;
     private ProductType productType;
     private BigDecimal price;
     private String description;
     private String userId;
-    private String username;
     private int productQuantity;
+    private String username;
 
     private List<Order> orders = new ArrayList<>();
 

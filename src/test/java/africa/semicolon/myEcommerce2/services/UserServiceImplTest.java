@@ -9,6 +9,7 @@ import africa.semicolon.myEcommerce2.data.repositories.EcommerceUserRepository;
 import africa.semicolon.myEcommerce2.data.repositories.ShoppingCartRepository;
 import africa.semicolon.myEcommerce2.dto.request.*;
 import africa.semicolon.myEcommerce2.dto.response.*;
+import africa.semicolon.myEcommerce2.exceptions.UserAlreadyExistException;
 import lombok.var;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,6 +29,9 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 public class UserServiceImplTest {
+
+
+    private EcommerceUser ecommerceUser;
     RegisterRequest request;
     LoginRequest loginRequest;
     @Autowired
@@ -45,7 +49,7 @@ public class UserServiceImplTest {
     ProductService productService;
     @Autowired
     OrderService orderService;
-    OrderRequest  orderRequest;
+
 
     @Autowired
     OrderRepository orderRepository;
@@ -55,6 +59,8 @@ public class UserServiceImplTest {
 
     @Autowired
     ProductRepository productRepository;
+
+
 
     @Autowired
     ShoppingCartRepository shoppingCartRepository;
@@ -360,13 +366,7 @@ public class UserServiceImplTest {
         registerRequest1.setUsername("div2");
         RegisterResponse registerResponse = userService.register(registerRequest1);
 
-        AddProductRequest addProductRequest = new AddProductRequest();
-        addProductRequest.setProductName("cup");
-        addProductRequest.setProductType(UTENSILS);
-        addProductRequest.setDescription("kitchen tools");
-        addProductRequest.setUserId(registerResponse.getUserId());
-
-        AddProductResponse addProductResponse = userService.addProduct(addProductRequest);
+        AddProductResponse addProductResponse = getAddProductResponse("cup", registerResponse);
         assertThat(addProductResponse.getMessage()).isNotNull();
 
         Product myProduct = productService.findProductByName("cup");
@@ -423,6 +423,9 @@ public class UserServiceImplTest {
         registerRequest1.setUsername("div2");
        RegisterResponse registerResponse1 = userService.register(registerRequest1);
 
+        getAddProductResponse("cup", registerResponse);
+
+
         CreateProductRequest createProductRequest = new CreateProductRequest();
         createProductRequest.setProductName("slippers");
         createProductRequest.setProductType(FASHION);
@@ -445,90 +448,89 @@ public class UserServiceImplTest {
         viewCartRequest1.setUsername("div2");
 
         userService.viewCart(viewCartRequest1);
-//
-//        Item item = new Item();
-//        item.setPrice(BigDecimal.valueOf(2000));
-//        item.setProductName("shoe");
-//
-//        item.setUserRole(CUSTOMER);
-//        item.setQuantityOfProduct(1);
-//
-//
-//        ShoppingCart cart = new ShoppingCart();
-//        cart.addProductToCart(item);
-
-
-      //  assertEquals(items.getFirst().getPrice(),registerRequest1.getUsername());
-        //assertTrue(!cart.getItems().isEmpty());
-
-
-
     }
 
-
     @Test
-    public void testAddItem(){
+    public void testForSignUpException(){
         RegisterRequest registerRequest1 = new RegisterRequest();
         registerRequest1.setRole(CUSTOMER);
         registerRequest1.setFirstName("chichi2");
         registerRequest1.setLastName("dave2");
         registerRequest1.setPassword("1235");
-        registerRequest1.setUsername("div2");
+        registerRequest1.setUsername("mark");
         userService.register(registerRequest1);
+        assertThrows(UserAlreadyExistException.class,() -> userService.register(registerRequest1));
+
+
+    }
+
+    @Test
+    public void testAddItem(){
+        RegisterRequest registerRequest1 = new RegisterRequest();
+        registerRequest1.setRole(ADMIN);
+        registerRequest1.setFirstName("chichi2");
+        registerRequest1.setLastName("dave2");
+        registerRequest1.setPassword("1235");
+        registerRequest1.setUsername("div2");
+        RegisterResponse response = userService.register(registerRequest1);
+
+        AddProductResponse addProductResponse = getAddProductResponse("cup", response);
 
         RegisterResponse registerResponse1 = new RegisterResponse();
-//
-//        CreateProductRequest createProductRequest = new CreateProductRequest();
-//        createProductRequest.setProductName("knife");
-//        createProductRequest.setProductType(UTENSILS);
-//        createProductRequest.setPrice(BigDecimal.valueOf(1000));
-//        createProductRequest.setDescription("kitchen tools");
-//        createProductRequest.setUserId(registerResponse1.getUserId());
-//
-//        productService.create(createProductRequest);
+        AddItemRequest addItemRequest = getAddItemRequest(addProductResponse);
+        shoppingCartService.addItemToCart(addItemRequest);
 
-//        assertEquals(1,productService.getAllProduct());
+        assertEquals(1,userService.getUserCart(response.getUserId()).size());
 
-//        AddProductRequest addProductRequest1 = new AddProductRequest();
-//        addProductRequest1.setUsername("div2");
-//        addProductRequest1.setProductQuantity(2);
-//        addProductRequest1.setProductType(FASHION);
-//        addProductRequest1.setProductName("slippers");
-//        userService.addProduct(addProductRequest1);
-
-
-            AddItemRequest addItemRequest = new AddItemRequest();
-            addItemRequest.setUsername("div2");
-            addItemRequest.setProductName("cap");
-            addItemRequest.setQuantityOfProduct(2);
-            userService.addItemToCart(addItemRequest);
-
-
-
-        AddProductResponse addProductResponse = new AddProductResponse();
-        addProductResponse.setMessage("product added successfully");
-
-
-
-        assertEquals(2,productService.getAllProduct());
-
-
-//        AddItemRequest addItemRequest = new AddItemRequest();
-//        addItemRequest.setProductName("wedding dress");
-//        addItemRequest.setQuantityOfProduct(2);
-//        addItemRequest.setUsername("div2");
-//        addProductRequest.
     }
 
 
+    @Test
+    public void testToAddSeperateProduct(){
+        RegisterRequest registerRequest1 = new RegisterRequest();
+        registerRequest1.setRole(ADMIN);
+        registerRequest1.setFirstName("chichi2");
+        registerRequest1.setLastName("dave2");
+        registerRequest1.setPassword("1235");
+        registerRequest1.setUsername("div2");
+        RegisterResponse response  = userService.register(registerRequest1);
 
+        AddProductResponse addProductResponseOne = getAddProductResponse("cup", response);
 
+        AddProductResponse addProductResponseTwo = getAddProductResponse("pot", response);
+        AddProductResponse addProductResponseThree =getAddProductResponse("Sugar", response);
 
+        AddItemRequest addItemRequest = getAddItemRequest(addProductResponseOne);
+        shoppingCartService.addItemToCart(addItemRequest);
 
+        AddItemRequest addItemRequestTwo = getAddItemRequest(addProductResponseTwo);
+        shoppingCartService.addItemToCart(addItemRequestTwo);
 
+        AddItemRequest addItemRequestThree = getAddItemRequest(addProductResponseThree);
+        shoppingCartService.addItemToCart(addItemRequestThree);
 
+        assertEquals(3,userService.getUserCart(response.getUserId()).size());
 
+    }
 
+    private static AddItemRequest getAddItemRequest(AddProductResponse addProductResponse) {
+        AddItemRequest addItemRequest = new AddItemRequest();
+        addItemRequest.setUsername("div2");
+        addItemRequest.setProductName("cup");
+        addItemRequest.setQuantityOfProduct(2);
+        addItemRequest.setProductId(addProductResponse.getProductId());
+        return addItemRequest;
+    }
+
+    private AddProductResponse getAddProductResponse(String productName, RegisterResponse registerResponse) {
+        AddProductRequest addProductRequest = new AddProductRequest();
+        addProductRequest.setProductName(productName);
+        addProductRequest.setProductType(UTENSILS);
+        addProductRequest.setDescription("kitchen tools");
+        addProductRequest.setUserId(registerResponse.getUserId());
+        AddProductResponse addProductResponse = userService.addProduct(addProductRequest);
+        return addProductResponse;
+    }
 
 
 }
